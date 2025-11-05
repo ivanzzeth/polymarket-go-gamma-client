@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	polymarketgamma "github.com/ivanzzeth/polymarket-go-gamma-client"
 )
@@ -13,7 +14,7 @@ func main() {
 	client := polymarketgamma.NewClient(http.DefaultClient)
 
 	fmt.Println("🔍 Finding markets with spread > 3x tick size...")
-	fmt.Println("=" + string(make([]byte, 60)) + "=")
+	fmt.Println(strings.Repeat("=", 62))
 
 	// Find markets with spread > 3x tick size
 	var wideSpreadMarkets []*polymarketgamma.Market

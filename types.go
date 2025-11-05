@@ -30,7 +30,8 @@ func (ct *NormalizedTime) UnmarshalJSON(b []byte) error {
 		"2006-01-02 15:04:05.999999999+00",
 		"2006-01-02 15:04:05-07",
 		"2006-01-02 15:04:05+00",
-		"2006-01-02", // Simple date format (YYYY-MM-DD)
+		"2006-01-02",     // Simple date format (YYYY-MM-DD)
+		"January 2, 2006", // Long month name format (e.g., "November 1, 2022")
 	}
 
 	var err error
@@ -68,6 +69,40 @@ func (ct NormalizedTime) IsZero() bool {
 // Format returns a textual representation of the time value
 func (ct NormalizedTime) Format(layout string) string {
 	return time.Time(ct).Format(layout)
+}
+
+// StringOrArray is a custom type that can unmarshal both string and array from JSON
+// API sometimes returns these fields as strings, sometimes as arrays
+type StringOrArray []string
+
+// UnmarshalJSON implements the json.Unmarshaler interface
+func (sa *StringOrArray) UnmarshalJSON(b []byte) error {
+	// Try to unmarshal as array first
+	var arr []string
+	if err := json.Unmarshal(b, &arr); err == nil {
+		*sa = StringOrArray(arr)
+		return nil
+	}
+
+	// If that fails, try as string
+	var s string
+	if err := json.Unmarshal(b, &s); err == nil {
+		if s == "" {
+			*sa = StringOrArray([]string{})
+		} else {
+			*sa = StringOrArray([]string{s})
+		}
+		return nil
+	}
+
+	// Default to empty array
+	*sa = StringOrArray([]string{})
+	return nil
+}
+
+// MarshalJSON implements the json.Marshaler interface
+func (sa StringOrArray) MarshalJSON() ([]byte, error) {
+	return json.Marshal([]string(sa))
 }
 
 // HealthResponse represents the response from the health check endpoint
@@ -279,9 +314,9 @@ type Market struct {
 	UpperBound string `json:"upperBound"`
 
 	// Outcomes and pricing
-	Outcomes      string `json:"outcomes"`
-	OutcomePrices string `json:"outcomePrices"`
-	ShortOutcomes string `json:"shortOutcomes"`
+	Outcomes      StringOrArray `json:"outcomes"`
+	OutcomePrices StringOrArray `json:"outcomePrices"`
+	ShortOutcomes StringOrArray `json:"shortOutcomes"`
 
 	// Status flags
 	Active     bool `json:"active"`
