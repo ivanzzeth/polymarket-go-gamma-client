@@ -211,6 +211,32 @@ type GetTeamsParams struct {
 	Abbreviation []string `json:"abbreviation,omitempty"` // Filter by abbreviation(s)
 }
 
+// GetTagsParams represents query parameters for fetching tags
+type GetTagsParams struct {
+	Limit           int    `json:"limit,omitempty"`            // Number of results to return (x >= 0)
+	Offset          int    `json:"offset,omitempty"`           // Number of results to skip (x >= 0)
+	Order           string `json:"order,omitempty"`            // Comma-separated list of fields to order by
+	Ascending       *bool  `json:"ascending,omitempty"`        // Sort order
+	IncludeTemplate *bool  `json:"include_template,omitempty"` // Include template information
+	IsCarousel      *bool  `json:"is_carousel,omitempty"`      // Filter by carousel status
+}
+
+// GetTagByIDQueryParams represents query parameters for fetching a single tag by ID
+type GetTagByIDQueryParams struct {
+	IncludeTemplate *bool `json:"include_template,omitempty"` // Include template information
+}
+
+// GetTagBySlugQueryParams represents query parameters for fetching a single tag by slug
+type GetTagBySlugQueryParams struct {
+	IncludeTemplate *bool `json:"include_template,omitempty"` // Include template information
+}
+
+// GetRelatedTagsParams represents query parameters for fetching related tags
+type GetRelatedTagsParams struct {
+	OmitEmpty *bool     `json:"omit_empty,omitempty"` // Omit empty relationships
+	Status    TagStatus `json:"status,omitempty"`     // Status filter (active, closed, all)
+}
+
 // SearchParams represents parameters for searching markets, events, and profiles
 type SearchParams struct {
 	Q                 string   `json:"q"`                            // Search query (required)
@@ -776,3 +802,20 @@ type SportMetadata struct {
 	Tags       string `json:"tags"`
 	Series     string `json:"series"`
 }
+
+// TagRelationship represents a relationship between two tags
+type TagRelationship struct {
+	ID           string `json:"id"`
+	TagID        int    `json:"tagID"`
+	RelatedTagID int    `json:"relatedTagID"`
+	Rank         int    `json:"rank"`
+}
+
+// TagStatus represents the status filter for related tags
+type TagStatus string
+
+const (
+	TagStatusActive TagStatus = "active"
+	TagStatusClosed TagStatus = "closed"
+	TagStatusAll    TagStatus = "all"
+)
