@@ -200,6 +200,17 @@ type GetSeriesByIDQueryParams struct {
 	IncludeChat *bool `json:"include_chat,omitempty"` // Include chat information in the response
 }
 
+// GetTeamsParams represents query parameters for fetching teams
+type GetTeamsParams struct {
+	Limit        int      `json:"limit,omitempty"`        // Number of results to return (x >= 0)
+	Offset       int      `json:"offset,omitempty"`       // Number of results to skip (x >= 0)
+	Order        string   `json:"order,omitempty"`        // Comma-separated list of fields to order by
+	Ascending    *bool    `json:"ascending,omitempty"`    // Sort order
+	League       []string `json:"league,omitempty"`       // Filter by league(s)
+	Name         []string `json:"name,omitempty"`         // Filter by name(s)
+	Abbreviation []string `json:"abbreviation,omitempty"` // Filter by abbreviation(s)
+}
+
 // SearchParams represents parameters for searching markets, events, and profiles
 type SearchParams struct {
 	Q                 string   `json:"q"`                            // Search query (required)
@@ -741,4 +752,27 @@ type Template struct {
 	ShowMarketImages bool   `json:"showMarketImages"`
 	SeriesSlug       string `json:"seriesSlug"`
 	Outcomes         string `json:"outcomes"`
+}
+
+// Team represents a sports team
+type Team struct {
+	ID           int            `json:"id"`
+	Name         string         `json:"name"`
+	League       string         `json:"league"`
+	Record       string         `json:"record"`
+	Logo         string         `json:"logo"`
+	Abbreviation string         `json:"abbreviation"`
+	Alias        string         `json:"alias"`
+	CreatedAt    NormalizedTime `json:"createdAt"`
+	UpdatedAt    NormalizedTime `json:"updatedAt"`
+}
+
+// SportMetadata represents metadata information for a sport
+type SportMetadata struct {
+	Sport      string `json:"sport"`
+	Image      string `json:"image"`
+	Resolution string `json:"resolution"`
+	Ordering   string `json:"ordering"`
+	Tags       string `json:"tags"`
+	Series     string `json:"series"`
 }
