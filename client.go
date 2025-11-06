@@ -16,7 +16,7 @@ type Client struct {
 // NewClient creates a new Gamma API client for querying events and market metadata
 func NewClient(httpClient *http.Client) *Client {
 	return &Client{
-		host:       GAMMA_API_URL,
+		host:       GammaAPIURL,
 		httpClient: httpClient,
 	}
 }
