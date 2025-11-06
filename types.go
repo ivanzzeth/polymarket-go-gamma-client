@@ -30,7 +30,7 @@ func (ct *NormalizedTime) UnmarshalJSON(b []byte) error {
 		"2006-01-02 15:04:05.999999999+00",
 		"2006-01-02 15:04:05-07",
 		"2006-01-02 15:04:05+00",
-		"2006-01-02",     // Simple date format (YYYY-MM-DD)
+		"2006-01-02",      // Simple date format (YYYY-MM-DD)
 		"January 2, 2006", // Long month name format (e.g., "November 1, 2022")
 	}
 
@@ -112,56 +112,56 @@ type HealthResponse struct {
 
 // GetEventsParams represents parameters for fetching events list
 type GetEventsParams struct {
-	Limit           int      `json:"limit,omitempty"`    // Maximum number of events to return
-	Offset          int      `json:"offset,omitempty"`   // Pagination offset
-	Order           string   `json:"order,omitempty"`    // Comma-separated list of fields to order by
-	Ascending       *bool    `json:"ascending,omitempty"`
-	ID              []int    `json:"id,omitempty"`
-	Slug            []string `json:"slug,omitempty"`
-	TagID           *int     `json:"tag_id,omitempty"`
-	ExcludeTagID    []int    `json:"exclude_tag_id,omitempty"`
-	RelatedTags     *bool    `json:"related_tags,omitempty"`
-	Featured        *bool    `json:"featured,omitempty"`
-	CYOM            *bool    `json:"cyom,omitempty"`
-	IncludeChat     *bool    `json:"include_chat,omitempty"`
-	IncludeTemplate *bool    `json:"include_template,omitempty"`
-	Recurrence      string   `json:"recurrence,omitempty"`
-	Closed          *bool    `json:"closed,omitempty"`
-	StartDateMin    string   `json:"start_date_min,omitempty"` // ISO 8601 date-time
-	StartDateMax    string   `json:"start_date_max,omitempty"` // ISO 8601 date-time
-	EndDateMin      string   `json:"end_date_min,omitempty"`   // ISO 8601 date-time
-	EndDateMax      string   `json:"end_date_max,omitempty"`   // ISO 8601 date-time
+	Limit           int             `json:"limit,omitempty"`  // Maximum number of events to return
+	Offset          int             `json:"offset,omitempty"` // Pagination offset
+	Order           string          `json:"order,omitempty"`  // Comma-separated list of fields to order by
+	Ascending       *bool           `json:"ascending,omitempty"`
+	ID              []int           `json:"id,omitempty"`
+	Slug            []string        `json:"slug,omitempty"`
+	TagID           *int            `json:"tag_id,omitempty"`
+	ExcludeTagID    []int           `json:"exclude_tag_id,omitempty"`
+	RelatedTags     *bool           `json:"related_tags,omitempty"`
+	Featured        *bool           `json:"featured,omitempty"`
+	CYOM            *bool           `json:"cyom,omitempty"`
+	IncludeChat     *bool           `json:"include_chat,omitempty"`
+	IncludeTemplate *bool           `json:"include_template,omitempty"`
+	Recurrence      string          `json:"recurrence,omitempty"`
+	Closed          *bool           `json:"closed,omitempty"`
+	StartDateMin    *NormalizedTime `json:"start_date_min,omitempty"` // ISO 8601 date-time
+	StartDateMax    *NormalizedTime `json:"start_date_max,omitempty"` // ISO 8601 date-time
+	EndDateMin      *NormalizedTime `json:"end_date_min,omitempty"`   // ISO 8601 date-time
+	EndDateMax      *NormalizedTime `json:"end_date_max,omitempty"`   // ISO 8601 date-time
 }
 
 // GetMarketsParams represents parameters for fetching markets list
 type GetMarketsParams struct {
-	Limit               int      `json:"limit,omitempty"`
-	Offset              int      `json:"offset,omitempty"`
-	Order               string   `json:"order,omitempty"`          // Comma-separated list of fields to order by
-	Ascending           *bool    `json:"ascending,omitempty"`      // Use pointer to distinguish between false and unset
-	ID                  []int    `json:"id,omitempty"`             // Market IDs
-	Slug                []string `json:"slug,omitempty"`           // Market slugs
-	ClobTokenIDs        []string `json:"clob_token_ids,omitempty"` // CLOB token IDs
-	ConditionIDs        []string `json:"condition_ids,omitempty"`  // Condition IDs
-	MarketMakerAddress  []string `json:"market_maker_address,omitempty"`
-	LiquidityNumMin     *float64 `json:"liquidity_num_min,omitempty"`
-	LiquidityNumMax     *float64 `json:"liquidity_num_max,omitempty"`
-	VolumeNumMin        *float64 `json:"volume_num_min,omitempty"`
-	VolumeNumMax        *float64 `json:"volume_num_max,omitempty"`
-	StartDateMin        string   `json:"start_date_min,omitempty"` // ISO 8601 date-time
-	StartDateMax        string   `json:"start_date_max,omitempty"` // ISO 8601 date-time
-	EndDateMin          string   `json:"end_date_min,omitempty"`   // ISO 8601 date-time
-	EndDateMax          string   `json:"end_date_max,omitempty"`   // ISO 8601 date-time
-	TagID               *int     `json:"tag_id,omitempty"`
-	RelatedTags         *bool    `json:"related_tags,omitempty"`
-	CYOM                *bool    `json:"cyom,omitempty"`
-	UMAResolutionStatus string   `json:"uma_resolution_status,omitempty"`
-	GameID              string   `json:"game_id,omitempty"`
-	SportsMarketTypes   []string `json:"sports_market_types,omitempty"`
-	RewardsMinSize      *float64 `json:"rewards_min_size,omitempty"`
-	QuestionIDs         []string `json:"question_ids,omitempty"`
-	IncludeTag          *bool    `json:"include_tag,omitempty"`
-	Closed              *bool    `json:"closed,omitempty"`
+	Limit               int             `json:"limit,omitempty"`
+	Offset              int             `json:"offset,omitempty"`
+	Order               string          `json:"order,omitempty"`          // Comma-separated list of fields to order by
+	Ascending           *bool           `json:"ascending,omitempty"`      // Use pointer to distinguish between false and unset
+	ID                  []int           `json:"id,omitempty"`             // Market IDs
+	Slug                []string        `json:"slug,omitempty"`           // Market slugs
+	ClobTokenIDs        []string        `json:"clob_token_ids,omitempty"` // CLOB token IDs
+	ConditionIDs        []string        `json:"condition_ids,omitempty"`  // Condition IDs
+	MarketMakerAddress  []string        `json:"market_maker_address,omitempty"`
+	LiquidityNumMin     *float64        `json:"liquidity_num_min,omitempty"`
+	LiquidityNumMax     *float64        `json:"liquidity_num_max,omitempty"`
+	VolumeNumMin        *float64        `json:"volume_num_min,omitempty"`
+	VolumeNumMax        *float64        `json:"volume_num_max,omitempty"`
+	StartDateMin        *NormalizedTime `json:"start_date_min,omitempty"` // ISO 8601 date-time
+	StartDateMax        *NormalizedTime `json:"start_date_max,omitempty"` // ISO 8601 date-time
+	EndDateMin          *NormalizedTime `json:"end_date_min,omitempty"`   // ISO 8601 date-time
+	EndDateMax          *NormalizedTime `json:"end_date_max,omitempty"`   // ISO 8601 date-time
+	TagID               *int            `json:"tag_id,omitempty"`
+	RelatedTags         *bool           `json:"related_tags,omitempty"`
+	CYOM                *bool           `json:"cyom,omitempty"`
+	UMAResolutionStatus string          `json:"uma_resolution_status,omitempty"`
+	GameID              string          `json:"game_id,omitempty"`
+	SportsMarketTypes   []string        `json:"sports_market_types,omitempty"`
+	RewardsMinSize      *float64        `json:"rewards_min_size,omitempty"`
+	QuestionIDs         []string        `json:"question_ids,omitempty"`
+	IncludeTag          *bool           `json:"include_tag,omitempty"`
+	Closed              *bool           `json:"closed,omitempty"`
 }
 
 // GetMarketByIDQueryParams represents query parameters for fetching a single market by ID
@@ -171,16 +171,16 @@ type GetMarketByIDQueryParams struct {
 
 // GetSeriesParams represents parameters for fetching series list
 type GetSeriesParams struct {
-	Limit           int      `json:"limit,omitempty"`    // Maximum number of series to return
-	Offset          int      `json:"offset,omitempty"`   // Pagination offset
-	Order           string   `json:"order,omitempty"`    // Comma-separated list of fields to order by
-	Ascending       *bool    `json:"ascending,omitempty"`
-	Slug            []string `json:"slug,omitempty"`
-	CategoriesIDs   []int    `json:"categories_ids,omitempty"`
+	Limit            int      `json:"limit,omitempty"`  // Maximum number of series to return
+	Offset           int      `json:"offset,omitempty"` // Pagination offset
+	Order            string   `json:"order,omitempty"`  // Comma-separated list of fields to order by
+	Ascending        *bool    `json:"ascending,omitempty"`
+	Slug             []string `json:"slug,omitempty"`
+	CategoriesIDs    []int    `json:"categories_ids,omitempty"`
 	CategoriesLabels []string `json:"categories_labels,omitempty"`
-	Closed          *bool    `json:"closed,omitempty"`
-	IncludeChat     *bool    `json:"include_chat,omitempty"`
-	Recurrence      string   `json:"recurrence,omitempty"`
+	Closed           *bool    `json:"closed,omitempty"`
+	IncludeChat      *bool    `json:"include_chat,omitempty"`
+	Recurrence       string   `json:"recurrence,omitempty"`
 }
 
 // GetEventByIDQueryParams represents query parameters for fetching a single event by ID
@@ -239,28 +239,28 @@ type GetRelatedTagsParams struct {
 
 // SearchParams represents parameters for searching markets, events, and profiles
 type SearchParams struct {
-	Q                 string   `json:"q"`                            // Search query (required)
-	Cache             *bool    `json:"cache,omitempty"`              // Use cache
-	EventsStatus      string   `json:"events_status,omitempty"`      // Events status filter
-	LimitPerType      *int     `json:"limit_per_type,omitempty"`     // Limit results per type
-	Page              *int     `json:"page,omitempty"`               // Page number for pagination
-	EventsTag         []string `json:"events_tag,omitempty"`         // Filter by event tags
+	Q                 string   `json:"q"`                             // Search query (required)
+	Cache             *bool    `json:"cache,omitempty"`               // Use cache
+	EventsStatus      string   `json:"events_status,omitempty"`       // Events status filter
+	LimitPerType      *int     `json:"limit_per_type,omitempty"`      // Limit results per type
+	Page              *int     `json:"page,omitempty"`                // Page number for pagination
+	EventsTag         []string `json:"events_tag,omitempty"`          // Filter by event tags
 	KeepClosedMarkets *int     `json:"keep_closed_markets,omitempty"` // Keep closed markets (0 or 1)
-	Sort              string   `json:"sort,omitempty"`               // Sort field
-	Ascending         *bool    `json:"ascending,omitempty"`          // Sort order
-	SearchTags        *bool    `json:"search_tags,omitempty"`        // Include tags in search
-	SearchProfiles    *bool    `json:"search_profiles,omitempty"`    // Include profiles in search
-	Recurrence        string   `json:"recurrence,omitempty"`         // Recurrence filter
-	ExcludeTagID      []int    `json:"exclude_tag_id,omitempty"`     // Exclude tag IDs
-	Optimized         *bool    `json:"optimized,omitempty"`          // Return optimized images
+	Sort              string   `json:"sort,omitempty"`                // Sort field
+	Ascending         *bool    `json:"ascending,omitempty"`           // Sort order
+	SearchTags        *bool    `json:"search_tags,omitempty"`         // Include tags in search
+	SearchProfiles    *bool    `json:"search_profiles,omitempty"`     // Include profiles in search
+	Recurrence        string   `json:"recurrence,omitempty"`          // Recurrence filter
+	ExcludeTagID      []int    `json:"exclude_tag_id,omitempty"`      // Exclude tag IDs
+	Optimized         *bool    `json:"optimized,omitempty"`           // Return optimized images
 }
 
 // SearchResponse represents the response from the search endpoint
 type SearchResponse struct {
-	Events     []Event      `json:"events"`
-	Tags       []SearchTag  `json:"tags"`
-	Profiles   []Profile    `json:"profiles"`
-	Pagination Pagination   `json:"pagination"`
+	Events     []Event     `json:"events"`
+	Tags       []SearchTag `json:"tags"`
+	Profiles   []Profile   `json:"profiles"`
+	Pagination Pagination  `json:"pagination"`
 }
 
 // SearchTag represents a tag in search results
@@ -273,29 +273,29 @@ type SearchTag struct {
 
 // Profile represents a user profile
 type Profile struct {
-	ID                     string          `json:"id"`
-	Name                   string          `json:"name"`
-	User                   int             `json:"user"`
-	Referral               string          `json:"referral"`
-	CreatedBy              int             `json:"createdBy"`
-	UpdatedBy              int             `json:"updatedBy"`
-	CreatedAt              NormalizedTime  `json:"createdAt"`
-	UpdatedAt              NormalizedTime  `json:"updatedAt"`
-	UTMSource              string          `json:"utmSource"`
-	UTMMedium              string          `json:"utmMedium"`
-	UTMCampaign            string          `json:"utmCampaign"`
-	UTMContent             string          `json:"utmContent"`
-	UTMTerm                string          `json:"utmTerm"`
-	WalletActivated        bool            `json:"walletActivated"`
-	Pseudonym              string          `json:"pseudonym"`
-	DisplayUsernamePublic  bool            `json:"displayUsernamePublic"`
-	ProfileImage           string          `json:"profileImage"`
-	Bio                    string          `json:"bio"`
-	ProxyWallet            string          `json:"proxyWallet"`
-	ProfileImageOptimized  *ImageOptimized `json:"profileImageOptimized,omitempty"`
-	IsCloseOnly            bool            `json:"isCloseOnly"`
-	IsCertReq              bool            `json:"isCertReq"`
-	CertReqDate            NormalizedTime  `json:"certReqDate"`
+	ID                    string          `json:"id"`
+	Name                  string          `json:"name"`
+	User                  int             `json:"user"`
+	Referral              string          `json:"referral"`
+	CreatedBy             int             `json:"createdBy"`
+	UpdatedBy             int             `json:"updatedBy"`
+	CreatedAt             NormalizedTime  `json:"createdAt"`
+	UpdatedAt             NormalizedTime  `json:"updatedAt"`
+	UTMSource             string          `json:"utmSource"`
+	UTMMedium             string          `json:"utmMedium"`
+	UTMCampaign           string          `json:"utmCampaign"`
+	UTMContent            string          `json:"utmContent"`
+	UTMTerm               string          `json:"utmTerm"`
+	WalletActivated       bool            `json:"walletActivated"`
+	Pseudonym             string          `json:"pseudonym"`
+	DisplayUsernamePublic bool            `json:"displayUsernamePublic"`
+	ProfileImage          string          `json:"profileImage"`
+	Bio                   string          `json:"bio"`
+	ProxyWallet           string          `json:"proxyWallet"`
+	ProfileImageOptimized *ImageOptimized `json:"profileImageOptimized,omitempty"`
+	IsCloseOnly           bool            `json:"isCloseOnly"`
+	IsCertReq             bool            `json:"isCertReq"`
+	CertReqDate           NormalizedTime  `json:"certReqDate"`
 }
 
 // Pagination represents pagination information

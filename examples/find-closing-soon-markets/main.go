@@ -18,9 +18,9 @@ func main() {
 	fmt.Println("\nScanning for markets about to close where outcome may be predictable...")
 
 	// Configuration
-	hoursUntilClose := 48.0    // Find markets closing within 48 hours
-	minVolume := 1000.0        // Minimum volume to filter out dead markets
-	targetCount := 5           // Find 5 markets
+	hoursUntilClose := 48.0 // Find markets closing within 48 hours
+	minVolume := 1000.0     // Minimum volume to filter out dead markets
+	targetCount := 5        // Find 5 markets
 	limit := 100
 	offset := 0
 	maxAttempts := 10
@@ -75,11 +75,11 @@ func main() {
 				hoursRemaining := timeUntilClose.Hours()
 
 				opportunity := &ClosingSoonOpportunity{
-					Market:               market,
-					TimeUntilClose:       timeUntilClose,
-					HoursRemaining:       hoursRemaining,
-					CurrentPrice:         market.LastTradePrice,
-					PotentialMispricing:  analyzePotentialMispricing(market, hoursRemaining),
+					Market:                market,
+					TimeUntilClose:        timeUntilClose,
+					HoursRemaining:        hoursRemaining,
+					CurrentPrice:          market.LastTradePrice,
+					PotentialMispricing:   analyzePotentialMispricing(market, hoursRemaining),
 					AutomaticallyResolved: market.AutomaticallyResolved,
 				}
 

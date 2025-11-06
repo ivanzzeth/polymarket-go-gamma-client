@@ -22,7 +22,7 @@ func main() {
 	limit := 50
 	offset := 0
 	maxAttempts := 10
-	minDeviation := 0.02 // 2% minimum deviation to consider as arbitrage
+	minDeviation := 0.02   // 2% minimum deviation to consider as arbitrage
 	minLiquidity := 1000.0 // Minimum liquidity for execution
 
 	var arbitrageOpportunities []ArbitrageOpportunity
@@ -96,13 +96,13 @@ func main() {
 }
 
 type ArbitrageOpportunity struct {
-	Event           *polymarketgamma.Event
-	ProbabilitySum  float64
-	Deviation       float64
-	ArbitrageType   string // "underpriced" or "overpriced"
-	TotalLiquidity  float64
-	ExecutableSize  float64
-	ExpectedReturn  float64
+	Event          *polymarketgamma.Event
+	ProbabilitySum float64
+	Deviation      float64
+	ArbitrageType  string // "underpriced" or "overpriced"
+	TotalLiquidity float64
+	ExecutableSize float64
+	ExpectedReturn float64
 }
 
 func analyzeEvent(event *polymarketgamma.Event, minDeviation float64, minLiquidity float64) *ArbitrageOpportunity {

@@ -76,17 +76,17 @@ func (c *Client) GetMarkets(params *GetMarketsParams) ([]*Market, error) {
 		if params.VolumeNumMax != nil {
 			urlParams.Add("volume_num_max", fmt.Sprintf("%f", *params.VolumeNumMax))
 		}
-		if params.StartDateMin != "" {
-			urlParams.Add("start_date_min", params.StartDateMin)
+		if params.StartDateMin != nil {
+			urlParams.Add("start_date_min", params.StartDateMin.Time().Format("2006-01-02T15:04:05Z07:00"))
 		}
-		if params.StartDateMax != "" {
-			urlParams.Add("start_date_max", params.StartDateMax)
+		if params.StartDateMax != nil {
+			urlParams.Add("start_date_max", params.StartDateMax.Time().Format("2006-01-02T15:04:05Z07:00"))
 		}
-		if params.EndDateMin != "" {
-			urlParams.Add("end_date_min", params.EndDateMin)
+		if params.EndDateMin != nil {
+			urlParams.Add("end_date_min", params.EndDateMin.Time().Format("2006-01-02T15:04:05Z07:00"))
 		}
-		if params.EndDateMax != "" {
-			urlParams.Add("end_date_max", params.EndDateMax)
+		if params.EndDateMax != nil {
+			urlParams.Add("end_date_max", params.EndDateMax.Time().Format("2006-01-02T15:04:05Z07:00"))
 		}
 		if params.TagID != nil {
 			urlParams.Add("tag_id", fmt.Sprintf("%d", *params.TagID))

@@ -18,8 +18,8 @@ func main() {
 	fmt.Println("This creates unique arbitrage and hedging opportunities.")
 
 	// Configuration
-	minLiquidity := 1000.0     // Minimum liquidity
-	targetCount := 5           // Find 5 markets
+	minLiquidity := 1000.0 // Minimum liquidity
+	targetCount := 5       // Find 5 markets
 	limit := 50
 	offset := 0
 	maxAttempts := 10

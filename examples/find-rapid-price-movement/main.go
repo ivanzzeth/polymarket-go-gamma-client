@@ -18,9 +18,9 @@ func main() {
 	fmt.Println("\nScanning for markets with significant price changes that may present trading opportunities...")
 
 	// Configuration thresholds
-	minPriceChange := 0.15     // 15% minimum price change in 24h
-	minVolume := 5000.0        // Minimum $5k volume to filter out illiquid markets
-	targetCount := 5           // Find 5 markets
+	minPriceChange := 0.15 // 15% minimum price change in 24h
+	minVolume := 5000.0    // Minimum $5k volume to filter out illiquid markets
+	targetCount := 5       // Find 5 markets
 	limit := 100
 	offset := 0
 	maxAttempts := 10

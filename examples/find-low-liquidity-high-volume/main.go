@@ -16,10 +16,10 @@ func main() {
 	fmt.Println(strings.Repeat("=", 82))
 
 	// Configuration thresholds
-	minVolume24hr := 10000.0  // Minimum $10k daily volume
-	maxLiquidity := 5000.0    // Maximum $5k liquidity
-	minVolumeRatio := 2.0     // Volume should be at least 2x liquidity
-	targetCount := 5          // Find 5 markets
+	minVolume24hr := 10000.0 // Minimum $10k daily volume
+	maxLiquidity := 5000.0   // Maximum $5k liquidity
+	minVolumeRatio := 2.0    // Volume should be at least 2x liquidity
+	targetCount := 5         // Find 5 markets
 	limit := 100
 	offset := 0
 	maxAttempts := 10

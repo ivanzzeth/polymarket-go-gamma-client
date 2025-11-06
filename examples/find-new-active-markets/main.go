@@ -18,9 +18,9 @@ func main() {
 	fmt.Println("\nSearching for recently created markets with early market maker opportunities...")
 
 	// Configuration
-	daysOld := 7.0             // Markets launched within last 7 days
-	maxLiquidity := 10000.0    // Maximum liquidity (early stage markets)
-	targetCount := 5           // Find 5 markets
+	daysOld := 7.0          // Markets launched within last 7 days
+	maxLiquidity := 10000.0 // Maximum liquidity (early stage markets)
+	targetCount := 5        // Find 5 markets
 	limit := 100
 	offset := 0
 	maxAttempts := 10
