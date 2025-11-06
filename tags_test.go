@@ -1,16 +1,18 @@
 package polymarketgamma
 
 import (
+	"context"
 	"net/http"
 	"testing"
 )
 
 func TestGetTags(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Test fetching tags without parameters
 	t.Run("FetchTagsNoParams", func(t *testing.T) {
-		tags, err := client.GetTags(nil)
+		tags, err := client.GetTags(ctx, nil)
 		if err != nil {
 			t.Fatalf("Failed to fetch tags: %v", err)
 		}
@@ -34,7 +36,7 @@ func TestGetTags(t *testing.T) {
 			Limit: limit,
 		}
 
-		tags, err := client.GetTags(params)
+		tags, err := client.GetTags(ctx, params)
 		if err != nil {
 			t.Fatalf("Failed to fetch tags with limit: %v", err)
 		}
@@ -54,7 +56,7 @@ func TestGetTags(t *testing.T) {
 			IsCarousel: &isCarousel,
 		}
 
-		tags, err := client.GetTags(params)
+		tags, err := client.GetTags(ctx, params)
 		if err != nil {
 			t.Fatalf("Failed to fetch carousel tags: %v", err)
 		}
@@ -72,9 +74,10 @@ func TestGetTags(t *testing.T) {
 
 func TestGetTagByID(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// First get a list of tags to test with
-	tags, err := client.GetTags(&GetTagsParams{Limit: 1})
+	tags, err := client.GetTags(ctx, &GetTagsParams{Limit: 1})
 	if err != nil {
 		t.Fatalf("Failed to fetch tags for test setup: %v", err)
 	}
@@ -87,7 +90,7 @@ func TestGetTagByID(t *testing.T) {
 	testTagLabel := tags[0].Label
 
 	t.Run("FetchTagByID", func(t *testing.T) {
-		tag, err := client.GetTagByID(testTagID, nil)
+		tag, err := client.GetTagByID(ctx, testTagID, nil)
 		if err != nil {
 			t.Fatalf("Failed to fetch tag by ID: %v", err)
 		}
@@ -105,7 +108,7 @@ func TestGetTagByID(t *testing.T) {
 			IncludeTemplate: &includeTemplate,
 		}
 
-		tag, err := client.GetTagByID(testTagID, params)
+		tag, err := client.GetTagByID(ctx, testTagID, params)
 		if err != nil {
 			t.Fatalf("Failed to fetch tag by ID with template: %v", err)
 		}
@@ -118,9 +121,10 @@ func TestGetTagByID(t *testing.T) {
 
 func TestGetTagBySlug(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// First get a list of tags to test with
-	tags, err := client.GetTags(&GetTagsParams{Limit: 1})
+	tags, err := client.GetTags(ctx, &GetTagsParams{Limit: 1})
 	if err != nil {
 		t.Fatalf("Failed to fetch tags for test setup: %v", err)
 	}
@@ -133,7 +137,7 @@ func TestGetTagBySlug(t *testing.T) {
 	testTagID := tags[0].ID
 
 	t.Run("FetchTagBySlug", func(t *testing.T) {
-		tag, err := client.GetTagBySlug(testTagSlug, nil)
+		tag, err := client.GetTagBySlug(ctx, testTagSlug, nil)
 		if err != nil {
 			t.Fatalf("Failed to fetch tag by slug: %v", err)
 		}
@@ -151,7 +155,7 @@ func TestGetTagBySlug(t *testing.T) {
 			IncludeTemplate: &includeTemplate,
 		}
 
-		tag, err := client.GetTagBySlug(testTagSlug, params)
+		tag, err := client.GetTagBySlug(ctx, testTagSlug, params)
 		if err != nil {
 			t.Fatalf("Failed to fetch tag by slug with template: %v", err)
 		}
@@ -164,9 +168,10 @@ func TestGetTagBySlug(t *testing.T) {
 
 func TestGetTagByIDAndSlugConsistency(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Get a tag to test with
-	tags, err := client.GetTags(&GetTagsParams{Limit: 1})
+	tags, err := client.GetTags(ctx, &GetTagsParams{Limit: 1})
 	if err != nil {
 		t.Fatalf("Failed to fetch tags for test setup: %v", err)
 	}
@@ -178,13 +183,13 @@ func TestGetTagByIDAndSlugConsistency(t *testing.T) {
 	testTag := tags[0]
 
 	// Fetch by ID
-	tagByID, err := client.GetTagByID(testTag.ID, nil)
+	tagByID, err := client.GetTagByID(ctx, testTag.ID, nil)
 	if err != nil {
 		t.Fatalf("Failed to fetch tag by ID: %v", err)
 	}
 
 	// Fetch by slug
-	tagBySlug, err := client.GetTagBySlug(testTag.Slug, nil)
+	tagBySlug, err := client.GetTagBySlug(ctx, testTag.Slug, nil)
 	if err != nil {
 		t.Fatalf("Failed to fetch tag by slug: %v", err)
 	}
@@ -205,9 +210,10 @@ func TestGetTagByIDAndSlugConsistency(t *testing.T) {
 
 func TestGetRelatedTagsByID(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Get a tag to test with
-	tags, err := client.GetTags(&GetTagsParams{Limit: 1})
+	tags, err := client.GetTags(ctx, &GetTagsParams{Limit: 1})
 	if err != nil {
 		t.Fatalf("Failed to fetch tags for test setup: %v", err)
 	}
@@ -219,7 +225,7 @@ func TestGetRelatedTagsByID(t *testing.T) {
 	testTagID := tags[0].ID
 
 	t.Run("FetchRelatedTags", func(t *testing.T) {
-		relationships, err := client.GetRelatedTagsByID(testTagID, nil)
+		relationships, err := client.GetRelatedTagsByID(ctx, testTagID, nil)
 		if err != nil {
 			t.Fatalf("Failed to fetch related tags: %v", err)
 		}
@@ -238,7 +244,7 @@ func TestGetRelatedTagsByID(t *testing.T) {
 			Status: TagStatusActive,
 		}
 
-		relationships, err := client.GetRelatedTagsByID(testTagID, params)
+		relationships, err := client.GetRelatedTagsByID(ctx, testTagID, params)
 		if err != nil {
 			t.Fatalf("Failed to fetch related tags with status: %v", err)
 		}
@@ -249,9 +255,10 @@ func TestGetRelatedTagsByID(t *testing.T) {
 
 func TestGetRelatedTagsBySlug(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Get a tag to test with
-	tags, err := client.GetTags(&GetTagsParams{Limit: 1})
+	tags, err := client.GetTags(ctx, &GetTagsParams{Limit: 1})
 	if err != nil {
 		t.Fatalf("Failed to fetch tags for test setup: %v", err)
 	}
@@ -263,7 +270,7 @@ func TestGetRelatedTagsBySlug(t *testing.T) {
 	testTagSlug := tags[0].Slug
 
 	t.Run("FetchRelatedTagsBySlug", func(t *testing.T) {
-		relationships, err := client.GetRelatedTagsBySlug(testTagSlug, nil)
+		relationships, err := client.GetRelatedTagsBySlug(ctx, testTagSlug, nil)
 		if err != nil {
 			t.Fatalf("Failed to fetch related tags by slug: %v", err)
 		}
@@ -274,9 +281,10 @@ func TestGetRelatedTagsBySlug(t *testing.T) {
 
 func TestGetRelatedTagsDetailByID(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Get a tag to test with
-	tags, err := client.GetTags(&GetTagsParams{Limit: 1})
+	tags, err := client.GetTags(ctx, &GetTagsParams{Limit: 1})
 	if err != nil {
 		t.Fatalf("Failed to fetch tags for test setup: %v", err)
 	}
@@ -288,7 +296,7 @@ func TestGetRelatedTagsDetailByID(t *testing.T) {
 	testTagID := tags[0].ID
 
 	t.Run("FetchRelatedTagsDetail", func(t *testing.T) {
-		relatedTags, err := client.GetRelatedTagsDetailByID(testTagID, nil)
+		relatedTags, err := client.GetRelatedTagsDetailByID(ctx, testTagID, nil)
 		if err != nil {
 			t.Fatalf("Failed to fetch related tags detail: %v", err)
 		}
@@ -307,7 +315,7 @@ func TestGetRelatedTagsDetailByID(t *testing.T) {
 			Status: TagStatusAll,
 		}
 
-		relatedTags, err := client.GetRelatedTagsDetailByID(testTagID, params)
+		relatedTags, err := client.GetRelatedTagsDetailByID(ctx, testTagID, params)
 		if err != nil {
 			t.Fatalf("Failed to fetch related tags detail with status: %v", err)
 		}
@@ -318,9 +326,10 @@ func TestGetRelatedTagsDetailByID(t *testing.T) {
 
 func TestGetRelatedTagsDetailBySlug(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Get a tag to test with
-	tags, err := client.GetTags(&GetTagsParams{Limit: 1})
+	tags, err := client.GetTags(ctx, &GetTagsParams{Limit: 1})
 	if err != nil {
 		t.Fatalf("Failed to fetch tags for test setup: %v", err)
 	}
@@ -332,7 +341,7 @@ func TestGetRelatedTagsDetailBySlug(t *testing.T) {
 	testTagSlug := tags[0].Slug
 
 	t.Run("FetchRelatedTagsDetailBySlug", func(t *testing.T) {
-		relatedTags, err := client.GetRelatedTagsDetailBySlug(testTagSlug, nil)
+		relatedTags, err := client.GetRelatedTagsDetailBySlug(ctx, testTagSlug, nil)
 		if err != nil {
 			t.Fatalf("Failed to fetch related tags detail by slug: %v", err)
 		}
@@ -343,9 +352,10 @@ func TestGetRelatedTagsDetailBySlug(t *testing.T) {
 
 func TestRelatedTagsConsistency(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Get a tag to test with
-	tags, err := client.GetTags(&GetTagsParams{Limit: 1})
+	tags, err := client.GetTags(ctx, &GetTagsParams{Limit: 1})
 	if err != nil {
 		t.Fatalf("Failed to fetch tags for test setup: %v", err)
 	}
@@ -357,13 +367,13 @@ func TestRelatedTagsConsistency(t *testing.T) {
 	testTag := tags[0]
 
 	// Fetch relationships by ID
-	relsByID, err := client.GetRelatedTagsByID(testTag.ID, nil)
+	relsByID, err := client.GetRelatedTagsByID(ctx, testTag.ID, nil)
 	if err != nil {
 		t.Fatalf("Failed to fetch relationships by ID: %v", err)
 	}
 
 	// Fetch relationships by slug
-	relsBySlug, err := client.GetRelatedTagsBySlug(testTag.Slug, nil)
+	relsBySlug, err := client.GetRelatedTagsBySlug(ctx, testTag.Slug, nil)
 	if err != nil {
 		t.Fatalf("Failed to fetch relationships by slug: %v", err)
 	}
@@ -377,13 +387,13 @@ func TestRelatedTagsConsistency(t *testing.T) {
 	}
 
 	// Fetch detailed tags by ID
-	tagsByID, err := client.GetRelatedTagsDetailByID(testTag.ID, nil)
+	tagsByID, err := client.GetRelatedTagsDetailByID(ctx, testTag.ID, nil)
 	if err != nil {
 		t.Fatalf("Failed to fetch related tags detail by ID: %v", err)
 	}
 
 	// Fetch detailed tags by slug
-	tagsBySlug, err := client.GetRelatedTagsDetailBySlug(testTag.Slug, nil)
+	tagsBySlug, err := client.GetRelatedTagsDetailBySlug(ctx, testTag.Slug, nil)
 	if err != nil {
 		t.Fatalf("Failed to fetch related tags detail by slug: %v", err)
 	}

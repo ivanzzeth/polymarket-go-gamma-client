@@ -1,13 +1,14 @@
 package polymarketgamma
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
 )
 
 // GetMarketByID fetches a specific market by its market ID (numeric ID)
-func (c *Client) GetMarketByID(marketID string, params *GetMarketByIDQueryParams) (*Market, error) {
+func (c *Client) GetMarketByID(ctx context.Context, marketID string, params *GetMarketByIDQueryParams) (*Market, error) {
 	path := fmt.Sprintf("/markets/%s", url.PathEscape(marketID))
 
 	if params != nil && params.IncludeTag != nil {
@@ -16,7 +17,7 @@ func (c *Client) GetMarketByID(marketID string, params *GetMarketByIDQueryParams
 		path += "?" + urlParams.Encode()
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +32,7 @@ func (c *Client) GetMarketByID(marketID string, params *GetMarketByIDQueryParams
 
 // GetMarkets fetches markets with optional filtering and pagination
 // Reference: https://docs.polymarket.com/api-reference/markets/list-markets
-func (c *Client) GetMarkets(params *GetMarketsParams) ([]*Market, error) {
+func (c *Client) GetMarkets(ctx context.Context, params *GetMarketsParams) ([]*Market, error) {
 	path := "/markets?"
 
 	urlParams := url.Values{}
@@ -122,7 +123,7 @@ func (c *Client) GetMarkets(params *GetMarketsParams) ([]*Market, error) {
 
 	path += urlParams.Encode()
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -136,10 +137,10 @@ func (c *Client) GetMarkets(params *GetMarketsParams) ([]*Market, error) {
 }
 
 // GetMarketTags fetches all tags associated with a specific market
-func (c *Client) GetMarketTags(marketID string) ([]Tag, error) {
+func (c *Client) GetMarketTags(ctx context.Context, marketID string) ([]Tag, error) {
 	path := fmt.Sprintf("/markets/%s/tags", url.PathEscape(marketID))
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +154,7 @@ func (c *Client) GetMarketTags(marketID string) ([]Tag, error) {
 }
 
 // GetMarketBySlug fetches a specific market by its slug
-func (c *Client) GetMarketBySlug(slug string, params *GetMarketByIDQueryParams) (*Market, error) {
+func (c *Client) GetMarketBySlug(ctx context.Context, slug string, params *GetMarketByIDQueryParams) (*Market, error) {
 	path := fmt.Sprintf("/markets/slug/%s", url.PathEscape(slug))
 
 	if params != nil && params.IncludeTag != nil {
@@ -162,7 +163,7 @@ func (c *Client) GetMarketBySlug(slug string, params *GetMarketByIDQueryParams) 
 		path += "?" + urlParams.Encode()
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}

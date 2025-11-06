@@ -1,13 +1,14 @@
 package polymarketgamma
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
 )
 
 // GetEvents fetches all events with optional filtering
-func (c *Client) GetEvents(params *GetEventsParams) ([]Event, error) {
+func (c *Client) GetEvents(ctx context.Context, params *GetEventsParams) ([]Event, error) {
 	path := "/events?"
 
 	urlParams := url.Values{}
@@ -74,7 +75,7 @@ func (c *Client) GetEvents(params *GetEventsParams) ([]Event, error) {
 
 	path += urlParams.Encode()
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +89,7 @@ func (c *Client) GetEvents(params *GetEventsParams) ([]Event, error) {
 }
 
 // GetEventBySlug fetches a specific event by its slug using /events/slug/{slug} with optional query parameters
-func (c *Client) GetEventBySlug(slug string, params *GetEventBySlugQueryParams) (*Event, error) {
+func (c *Client) GetEventBySlug(ctx context.Context, slug string, params *GetEventBySlugQueryParams) (*Event, error) {
 	path := fmt.Sprintf("/events/slug/%s", url.PathEscape(slug))
 
 	// Add query parameters if provided
@@ -105,7 +106,7 @@ func (c *Client) GetEventBySlug(slug string, params *GetEventBySlugQueryParams) 
 		}
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +120,7 @@ func (c *Client) GetEventBySlug(slug string, params *GetEventBySlugQueryParams) 
 }
 
 // GetEventByID fetches a specific event by its ID with optional query parameters
-func (c *Client) GetEventByID(eventID string, params *GetEventByIDQueryParams) (*Event, error) {
+func (c *Client) GetEventByID(ctx context.Context, eventID string, params *GetEventByIDQueryParams) (*Event, error) {
 	path := fmt.Sprintf("/events/%s", url.PathEscape(eventID))
 
 	// Add query parameters if provided
@@ -136,7 +137,7 @@ func (c *Client) GetEventByID(eventID string, params *GetEventByIDQueryParams) (
 		}
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -150,10 +151,10 @@ func (c *Client) GetEventByID(eventID string, params *GetEventByIDQueryParams) (
 }
 
 // GetEventTags fetches all tags associated with a specific event
-func (c *Client) GetEventTags(eventID string) ([]Tag, error) {
+func (c *Client) GetEventTags(ctx context.Context, eventID string) ([]Tag, error) {
 	path := fmt.Sprintf("/events/%s/tags", url.PathEscape(eventID))
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}

@@ -1,16 +1,18 @@
 package polymarketgamma
 
 import (
+	"context"
 	"net/http"
 	"testing"
 )
 
 func TestSearch(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Test basic search
 	t.Run("BasicSearch", func(t *testing.T) {
-		result, err := client.Search(&SearchParams{
+		result, err := client.Search(ctx, &SearchParams{
 			Q: "election",
 		})
 		if err != nil {
@@ -60,7 +62,7 @@ func TestSearch(t *testing.T) {
 	// Test search with limit
 	t.Run("SearchWithLimit", func(t *testing.T) {
 		limit := 5
-		result, err := client.Search(&SearchParams{
+		result, err := client.Search(ctx, &SearchParams{
 			Q:            "trump",
 			LimitPerType: &limit,
 		})
@@ -78,7 +80,7 @@ func TestSearch(t *testing.T) {
 	t.Run("SearchWithTagsAndProfiles", func(t *testing.T) {
 		searchTags := true
 		searchProfiles := true
-		result, err := client.Search(&SearchParams{
+		result, err := client.Search(ctx, &SearchParams{
 			Q:              "crypto",
 			SearchTags:     &searchTags,
 			SearchProfiles: &searchProfiles,
@@ -96,7 +98,7 @@ func TestSearch(t *testing.T) {
 	// Test search with sorting
 	t.Run("SearchWithSorting", func(t *testing.T) {
 		ascending := false
-		result, err := client.Search(&SearchParams{
+		result, err := client.Search(ctx, &SearchParams{
 			Q:         "sports",
 			Sort:      "volume",
 			Ascending: &ascending,
@@ -122,7 +124,7 @@ func TestSearch(t *testing.T) {
 	t.Run("SearchWithPagination", func(t *testing.T) {
 		limit := 10
 		page := 1
-		result, err := client.Search(&SearchParams{
+		result, err := client.Search(ctx, &SearchParams{
 			Q:            "bitcoin",
 			LimitPerType: &limit,
 			Page:         &page,
@@ -138,7 +140,7 @@ func TestSearch(t *testing.T) {
 
 	// Test search with event tags filter
 	t.Run("SearchWithEventTags", func(t *testing.T) {
-		result, err := client.Search(&SearchParams{
+		result, err := client.Search(ctx, &SearchParams{
 			Q:         "election",
 			EventsTag: []string{"politics"},
 		})
@@ -152,7 +154,7 @@ func TestSearch(t *testing.T) {
 
 	// Test search with exclude tag
 	t.Run("SearchWithExcludeTag", func(t *testing.T) {
-		result, err := client.Search(&SearchParams{
+		result, err := client.Search(ctx, &SearchParams{
 			Q:            "sports",
 			ExcludeTagID: []int{1, 2},
 		})
@@ -167,7 +169,7 @@ func TestSearch(t *testing.T) {
 	// Test search with optimized images
 	t.Run("SearchWithOptimizedImages", func(t *testing.T) {
 		optimized := true
-		result, err := client.Search(&SearchParams{
+		result, err := client.Search(ctx, &SearchParams{
 			Q:         "nfl",
 			Optimized: &optimized,
 		})
@@ -195,7 +197,7 @@ func TestSearch(t *testing.T) {
 		searchProfiles := true
 		optimized := true
 
-		result, err := client.Search(&SearchParams{
+		result, err := client.Search(ctx, &SearchParams{
 			Q:                 "election 2024",
 			Cache:             &cache,
 			EventsStatus:      "active",
@@ -224,7 +226,7 @@ func TestSearch(t *testing.T) {
 
 	// Test error case: empty query
 	t.Run("ErrorEmptyQuery", func(t *testing.T) {
-		_, err := client.Search(&SearchParams{
+		_, err := client.Search(ctx, &SearchParams{
 			Q: "",
 		})
 		if err == nil {
@@ -235,7 +237,7 @@ func TestSearch(t *testing.T) {
 
 	// Test error case: nil params
 	t.Run("ErrorNilParams", func(t *testing.T) {
-		_, err := client.Search(nil)
+		_, err := client.Search(ctx, nil)
 		if err == nil {
 			t.Error("Expected error for nil params, got nil")
 		}
@@ -245,6 +247,7 @@ func TestSearch(t *testing.T) {
 
 func TestSearchDifferentQueries(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	queries := []string{
 		"trump",
@@ -260,7 +263,7 @@ func TestSearchDifferentQueries(t *testing.T) {
 	for _, query := range queries {
 		t.Run("Query_"+query, func(t *testing.T) {
 			limit := 3
-			result, err := client.Search(&SearchParams{
+			result, err := client.Search(ctx, &SearchParams{
 				Q:            query,
 				LimitPerType: &limit,
 			})

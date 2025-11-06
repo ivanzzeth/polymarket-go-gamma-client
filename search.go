@@ -1,13 +1,14 @@
 package polymarketgamma
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
 )
 
 // Search searches for markets, events, and profiles
-func (c *Client) Search(params *SearchParams) (*SearchResponse, error) {
+func (c *Client) Search(ctx context.Context, params *SearchParams) (*SearchResponse, error) {
 	if params == nil || params.Q == "" {
 		return nil, fmt.Errorf("search query (q) is required")
 	}
@@ -61,7 +62,7 @@ func (c *Client) Search(params *SearchParams) (*SearchResponse, error) {
 
 	path += urlParams.Encode()
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}

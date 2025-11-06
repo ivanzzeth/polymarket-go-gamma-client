@@ -1,6 +1,7 @@
 package polymarketgamma
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -8,7 +9,7 @@ import (
 
 // GetTeams fetches teams with optional filtering and pagination
 // Reference: https://gamma-api.polymarket.com/teams
-func (c *Client) GetTeams(params *GetTeamsParams) ([]Team, error) {
+func (c *Client) GetTeams(ctx context.Context, params *GetTeamsParams) ([]Team, error) {
 	path := "/teams?"
 
 	urlParams := url.Values{}
@@ -39,7 +40,7 @@ func (c *Client) GetTeams(params *GetTeamsParams) ([]Team, error) {
 
 	path += urlParams.Encode()
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -55,10 +56,10 @@ func (c *Client) GetTeams(params *GetTeamsParams) ([]Team, error) {
 // GetSportsMetadata retrieves metadata for various sports including images, resolution sources,
 // ordering preferences, tags, and series information
 // Reference: https://gamma-api.polymarket.com/sports
-func (c *Client) GetSportsMetadata() ([]SportMetadata, error) {
+func (c *Client) GetSportsMetadata(ctx context.Context) ([]SportMetadata, error) {
 	path := "/sports"
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}

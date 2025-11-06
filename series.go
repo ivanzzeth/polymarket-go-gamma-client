@@ -1,13 +1,14 @@
 package polymarketgamma
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
 )
 
 // GetSeries fetches all series with optional filtering
-func (c *Client) GetSeries(params *GetSeriesParams) ([]Series, error) {
+func (c *Client) GetSeries(ctx context.Context, params *GetSeriesParams) ([]Series, error) {
 	path := "/series?"
 
 	urlParams := url.Values{}
@@ -47,7 +48,7 @@ func (c *Client) GetSeries(params *GetSeriesParams) ([]Series, error) {
 
 	path += urlParams.Encode()
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +62,7 @@ func (c *Client) GetSeries(params *GetSeriesParams) ([]Series, error) {
 }
 
 // GetSeriesByID fetches a specific series by its ID
-func (c *Client) GetSeriesByID(seriesID string, params *GetSeriesByIDQueryParams) (*Series, error) {
+func (c *Client) GetSeriesByID(ctx context.Context, seriesID string, params *GetSeriesByIDQueryParams) (*Series, error) {
 	path := fmt.Sprintf("/series/%s", url.PathEscape(seriesID))
 
 	if params != nil && params.IncludeChat != nil {
@@ -70,7 +71,7 @@ func (c *Client) GetSeriesByID(seriesID string, params *GetSeriesByIDQueryParams
 		path += "?" + urlParams.Encode()
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}

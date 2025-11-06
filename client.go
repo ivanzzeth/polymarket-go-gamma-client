@@ -1,6 +1,7 @@
 package polymarketgamma
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -21,10 +22,10 @@ func NewClient(httpClient *http.Client) *Client {
 }
 
 // doRequest performs an HTTP request to the Gamma API
-func (c *Client) doRequest(method, path string) ([]byte, error) {
+func (c *Client) doRequest(ctx context.Context, method, path string) ([]byte, error) {
 	fullURL := c.host + path
 
-	req, err := http.NewRequest(method, fullURL, nil)
+	req, err := http.NewRequestWithContext(ctx, method, fullURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

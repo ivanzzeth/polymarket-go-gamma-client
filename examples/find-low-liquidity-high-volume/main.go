@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 
 func main() {
 	client := polymarketgamma.NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	fmt.Println("🔍 Finding high volume, low liquidity markets (market making opportunities)...")
 	fmt.Println(strings.Repeat("=", 82))
@@ -38,7 +40,7 @@ func main() {
 			Closed: &closed,
 		}
 
-		markets, err := client.GetMarkets(params)
+		markets, err := client.GetMarkets(ctx, params)
 		if err != nil {
 			log.Fatalf("Failed to fetch markets: %v", err)
 		}

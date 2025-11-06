@@ -1,16 +1,18 @@
 package polymarketgamma
 
 import (
+	"context"
 	"net/http"
 	"testing"
 )
 
 func TestAllMarketsFunctions(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Step 1: Get markets
 	t.Log("Step 1: Fetching markets...")
-	markets, err := client.GetMarkets(&GetMarketsParams{Limit: 3})
+	markets, err := client.GetMarkets(ctx, &GetMarketsParams{Limit: 3})
 	if err != nil {
 		t.Fatalf("GetMarkets failed: %v", err)
 	}
@@ -33,7 +35,7 @@ func TestAllMarketsFunctions(t *testing.T) {
 
 		// Test GetMarketByID without tags
 		t.Run("GetMarketByID_"+market.ID, func(t *testing.T) {
-			fetchedMarket, err := client.GetMarketByID(market.ID, nil)
+			fetchedMarket, err := client.GetMarketByID(ctx, market.ID, nil)
 			if err != nil {
 				t.Errorf("GetMarketByID failed: %v", err)
 				return
@@ -49,7 +51,7 @@ func TestAllMarketsFunctions(t *testing.T) {
 		// Test GetMarketByID with tags included
 		t.Run("GetMarketByID_WithTags_"+market.ID, func(t *testing.T) {
 			includeTag := true
-			fetchedMarket, err := client.GetMarketByID(market.ID, &GetMarketByIDQueryParams{
+			fetchedMarket, err := client.GetMarketByID(ctx, market.ID, &GetMarketByIDQueryParams{
 				IncludeTag: &includeTag,
 			})
 			if err != nil {
@@ -62,7 +64,7 @@ func TestAllMarketsFunctions(t *testing.T) {
 		// Test GetMarketBySlug (if slug exists)
 		if market.Slug != "" {
 			t.Run("GetMarketBySlug_"+market.Slug, func(t *testing.T) {
-				fetchedMarket, err := client.GetMarketBySlug(market.Slug, nil)
+				fetchedMarket, err := client.GetMarketBySlug(ctx, market.Slug, nil)
 				if err != nil {
 					t.Errorf("GetMarketBySlug failed: %v", err)
 					return
@@ -78,7 +80,7 @@ func TestAllMarketsFunctions(t *testing.T) {
 			// Test GetMarketBySlug with tags included
 			t.Run("GetMarketBySlug_WithTags_"+market.Slug, func(t *testing.T) {
 				includeTag := true
-				fetchedMarket, err := client.GetMarketBySlug(market.Slug, &GetMarketByIDQueryParams{
+				fetchedMarket, err := client.GetMarketBySlug(ctx, market.Slug, &GetMarketByIDQueryParams{
 					IncludeTag: &includeTag,
 				})
 				if err != nil {
@@ -93,7 +95,7 @@ func TestAllMarketsFunctions(t *testing.T) {
 
 		// Test GetMarketTags
 		t.Run("GetMarketTags_"+market.ID, func(t *testing.T) {
-			tags, err := client.GetMarketTags(market.ID)
+			tags, err := client.GetMarketTags(ctx, market.ID)
 			if err != nil {
 				t.Errorf("GetMarketTags failed: %v", err)
 				return

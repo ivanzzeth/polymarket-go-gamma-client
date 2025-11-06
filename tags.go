@@ -1,6 +1,7 @@
 package polymarketgamma
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -8,7 +9,7 @@ import (
 
 // GetTags fetches tags with optional filtering and pagination
 // Reference: https://gamma-api.polymarket.com/tags
-func (c *Client) GetTags(params *GetTagsParams) ([]Tag, error) {
+func (c *Client) GetTags(ctx context.Context, params *GetTagsParams) ([]Tag, error) {
 	path := "/tags?"
 
 	urlParams := url.Values{}
@@ -36,7 +37,7 @@ func (c *Client) GetTags(params *GetTagsParams) ([]Tag, error) {
 
 	path += urlParams.Encode()
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +52,7 @@ func (c *Client) GetTags(params *GetTagsParams) ([]Tag, error) {
 
 // GetTagByID fetches a specific tag by its ID
 // Reference: https://gamma-api.polymarket.com/tags/{id}
-func (c *Client) GetTagByID(tagID string, params *GetTagByIDQueryParams) (*Tag, error) {
+func (c *Client) GetTagByID(ctx context.Context, tagID string, params *GetTagByIDQueryParams) (*Tag, error) {
 	path := fmt.Sprintf("/tags/%s", url.PathEscape(tagID))
 
 	if params != nil && params.IncludeTemplate != nil {
@@ -60,7 +61,7 @@ func (c *Client) GetTagByID(tagID string, params *GetTagByIDQueryParams) (*Tag, 
 		path += "?" + urlParams.Encode()
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +76,7 @@ func (c *Client) GetTagByID(tagID string, params *GetTagByIDQueryParams) (*Tag, 
 
 // GetTagBySlug fetches a specific tag by its slug
 // Reference: https://gamma-api.polymarket.com/tags/slug/{slug}
-func (c *Client) GetTagBySlug(slug string, params *GetTagBySlugQueryParams) (*Tag, error) {
+func (c *Client) GetTagBySlug(ctx context.Context, slug string, params *GetTagBySlugQueryParams) (*Tag, error) {
 	path := fmt.Sprintf("/tags/slug/%s", url.PathEscape(slug))
 
 	if params != nil && params.IncludeTemplate != nil {
@@ -84,7 +85,7 @@ func (c *Client) GetTagBySlug(slug string, params *GetTagBySlugQueryParams) (*Ta
 		path += "?" + urlParams.Encode()
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +100,7 @@ func (c *Client) GetTagBySlug(slug string, params *GetTagBySlugQueryParams) (*Ta
 
 // GetRelatedTagsByID fetches related tag relationships by tag ID
 // Reference: https://gamma-api.polymarket.com/tags/{id}/related-tags
-func (c *Client) GetRelatedTagsByID(tagID string, params *GetRelatedTagsParams) ([]TagRelationship, error) {
+func (c *Client) GetRelatedTagsByID(ctx context.Context, tagID string, params *GetRelatedTagsParams) ([]TagRelationship, error) {
 	path := fmt.Sprintf("/tags/%s/related-tags", url.PathEscape(tagID))
 
 	if params != nil {
@@ -115,7 +116,7 @@ func (c *Client) GetRelatedTagsByID(tagID string, params *GetRelatedTagsParams) 
 		}
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +131,7 @@ func (c *Client) GetRelatedTagsByID(tagID string, params *GetRelatedTagsParams) 
 
 // GetRelatedTagsBySlug fetches related tag relationships by tag slug
 // Reference: https://gamma-api.polymarket.com/tags/slug/{slug}/related-tags
-func (c *Client) GetRelatedTagsBySlug(slug string, params *GetRelatedTagsParams) ([]TagRelationship, error) {
+func (c *Client) GetRelatedTagsBySlug(ctx context.Context, slug string, params *GetRelatedTagsParams) ([]TagRelationship, error) {
 	path := fmt.Sprintf("/tags/slug/%s/related-tags", url.PathEscape(slug))
 
 	if params != nil {
@@ -146,7 +147,7 @@ func (c *Client) GetRelatedTagsBySlug(slug string, params *GetRelatedTagsParams)
 		}
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (c *Client) GetRelatedTagsBySlug(slug string, params *GetRelatedTagsParams)
 
 // GetRelatedTagsDetailByID fetches detailed tag information for tags related to the given tag ID
 // Reference: https://gamma-api.polymarket.com/tags/{id}/related-tags/tags
-func (c *Client) GetRelatedTagsDetailByID(tagID string, params *GetRelatedTagsParams) ([]Tag, error) {
+func (c *Client) GetRelatedTagsDetailByID(ctx context.Context, tagID string, params *GetRelatedTagsParams) ([]Tag, error) {
 	path := fmt.Sprintf("/tags/%s/related-tags/tags", url.PathEscape(tagID))
 
 	if params != nil {
@@ -177,7 +178,7 @@ func (c *Client) GetRelatedTagsDetailByID(tagID string, params *GetRelatedTagsPa
 		}
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}
@@ -192,7 +193,7 @@ func (c *Client) GetRelatedTagsDetailByID(tagID string, params *GetRelatedTagsPa
 
 // GetRelatedTagsDetailBySlug fetches detailed tag information for tags related to the given tag slug
 // Reference: https://gamma-api.polymarket.com/tags/slug/{slug}/related-tags/tags
-func (c *Client) GetRelatedTagsDetailBySlug(slug string, params *GetRelatedTagsParams) ([]Tag, error) {
+func (c *Client) GetRelatedTagsDetailBySlug(ctx context.Context, slug string, params *GetRelatedTagsParams) ([]Tag, error) {
 	path := fmt.Sprintf("/tags/slug/%s/related-tags/tags", url.PathEscape(slug))
 
 	if params != nil {
@@ -208,7 +209,7 @@ func (c *Client) GetRelatedTagsDetailBySlug(slug string, params *GetRelatedTagsP
 		}
 	}
 
-	respBody, err := c.doRequest("GET", path)
+	respBody, err := c.doRequest(ctx, "GET", path)
 	if err != nil {
 		return nil, err
 	}

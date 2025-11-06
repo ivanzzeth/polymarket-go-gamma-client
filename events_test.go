@@ -1,15 +1,17 @@
 package polymarketgamma
 
 import (
+	"context"
 	"net/http"
 	"testing"
 )
 
 func TestGetEvents(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Test getting events with nil params (all events)
-	events, err := client.GetEvents(nil)
+	events, err := client.GetEvents(ctx, nil)
 	if err != nil {
 		t.Fatalf("GetEvents failed: %v", err)
 	}
@@ -22,7 +24,7 @@ func TestGetEvents(t *testing.T) {
 
 	// Test with specific params
 	featured := true
-	eventsWithParams, err := client.GetEvents(&GetEventsParams{
+	eventsWithParams, err := client.GetEvents(ctx, &GetEventsParams{
 		Limit:    5,
 		Featured: &featured,
 	})
@@ -35,9 +37,10 @@ func TestGetEvents(t *testing.T) {
 
 func TestGetEventByID(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// First get some events
-	events, err := client.GetEvents(&GetEventsParams{Limit: 10})
+	events, err := client.GetEvents(ctx, &GetEventsParams{Limit: 10})
 	if err != nil {
 		t.Fatalf("GetEvents failed: %v", err)
 	}
@@ -53,7 +56,7 @@ func TestGetEventByID(t *testing.T) {
 		}
 
 		t.Run("EventID_"+event.ID, func(t *testing.T) {
-			fetchedEvent, err := client.GetEventByID(event.ID, nil)
+			fetchedEvent, err := client.GetEventByID(ctx, event.ID, nil)
 			if err != nil {
 				t.Errorf("GetEventByID failed for ID %s: %v", event.ID, err)
 				return
@@ -70,9 +73,10 @@ func TestGetEventByID(t *testing.T) {
 
 func TestGetEventByIDWithParams(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// First get some events
-	events, err := client.GetEvents(&GetEventsParams{Limit: 5})
+	events, err := client.GetEvents(ctx, &GetEventsParams{Limit: 5})
 	if err != nil {
 		t.Fatalf("GetEvents failed: %v", err)
 	}
@@ -91,7 +95,7 @@ func TestGetEventByIDWithParams(t *testing.T) {
 		}
 
 		t.Run("EventID_"+event.ID+"_WithParams", func(t *testing.T) {
-			fetchedEvent, err := client.GetEventByID(event.ID, &GetEventByIDQueryParams{
+			fetchedEvent, err := client.GetEventByID(ctx, event.ID, &GetEventByIDQueryParams{
 				IncludeChat:     &includeChat,
 				IncludeTemplate: &includeTemplate,
 			})
@@ -119,9 +123,10 @@ func TestGetEventByIDWithParams(t *testing.T) {
 
 func TestGetEventBySlug(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// First get some events
-	events, err := client.GetEvents(&GetEventsParams{Limit: 10})
+	events, err := client.GetEvents(ctx, &GetEventsParams{Limit: 10})
 	if err != nil {
 		t.Fatalf("GetEvents failed: %v", err)
 	}
@@ -142,7 +147,7 @@ func TestGetEventBySlug(t *testing.T) {
 		}
 
 		t.Run("Slug_"+event.Slug, func(t *testing.T) {
-			fetchedEvent, err := client.GetEventBySlug(event.Slug, nil)
+			fetchedEvent, err := client.GetEventBySlug(ctx, event.Slug, nil)
 			if err != nil {
 				t.Errorf("GetEventBySlug failed for slug %s: %v", event.Slug, err)
 				return
@@ -159,9 +164,10 @@ func TestGetEventBySlug(t *testing.T) {
 
 func TestGetEventBySlugWithParams(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// First get some events with slugs
-	events, err := client.GetEvents(&GetEventsParams{Limit: 10})
+	events, err := client.GetEvents(ctx, &GetEventsParams{Limit: 10})
 	if err != nil {
 		t.Fatalf("GetEvents failed: %v", err)
 	}
@@ -192,7 +198,7 @@ func TestGetEventBySlugWithParams(t *testing.T) {
 		}
 
 		t.Run("Slug_"+event.Slug+"_WithParams", func(t *testing.T) {
-			fetchedEvent, err := client.GetEventBySlug(event.Slug, &GetEventBySlugQueryParams{
+			fetchedEvent, err := client.GetEventBySlug(ctx, event.Slug, &GetEventBySlugQueryParams{
 				IncludeChat:     &includeChat,
 				IncludeTemplate: &includeTemplate,
 			})
@@ -232,9 +238,10 @@ func TestGetEventBySlugWithParams(t *testing.T) {
 
 func TestGetEventBySlugWithIndividualParams(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// First get some events with slugs
-	events, err := client.GetEvents(&GetEventsParams{Limit: 5})
+	events, err := client.GetEvents(ctx, &GetEventsParams{Limit: 5})
 	if err != nil {
 		t.Fatalf("GetEvents failed: %v", err)
 	}
@@ -254,7 +261,7 @@ func TestGetEventBySlugWithIndividualParams(t *testing.T) {
 
 	t.Run("OnlyIncludeChat", func(t *testing.T) {
 		includeChat := true
-		fetchedEvent, err := client.GetEventBySlug(testEvent.Slug, &GetEventBySlugQueryParams{
+		fetchedEvent, err := client.GetEventBySlug(ctx, testEvent.Slug, &GetEventBySlugQueryParams{
 			IncludeChat: &includeChat,
 		})
 		if err != nil {
@@ -269,7 +276,7 @@ func TestGetEventBySlugWithIndividualParams(t *testing.T) {
 
 	t.Run("OnlyIncludeTemplate", func(t *testing.T) {
 		includeTemplate := true
-		fetchedEvent, err := client.GetEventBySlug(testEvent.Slug, &GetEventBySlugQueryParams{
+		fetchedEvent, err := client.GetEventBySlug(ctx, testEvent.Slug, &GetEventBySlugQueryParams{
 			IncludeTemplate: &includeTemplate,
 		})
 		if err != nil {
@@ -285,7 +292,7 @@ func TestGetEventBySlugWithIndividualParams(t *testing.T) {
 	t.Run("BothParams", func(t *testing.T) {
 		includeChat := true
 		includeTemplate := true
-		fetchedEvent, err := client.GetEventBySlug(testEvent.Slug, &GetEventBySlugQueryParams{
+		fetchedEvent, err := client.GetEventBySlug(ctx, testEvent.Slug, &GetEventBySlugQueryParams{
 			IncludeChat:     &includeChat,
 			IncludeTemplate: &includeTemplate,
 		})
@@ -302,7 +309,7 @@ func TestGetEventBySlugWithIndividualParams(t *testing.T) {
 	t.Run("WithFalseValues", func(t *testing.T) {
 		includeChat := false
 		includeTemplate := false
-		fetchedEvent, err := client.GetEventBySlug(testEvent.Slug, &GetEventBySlugQueryParams{
+		fetchedEvent, err := client.GetEventBySlug(ctx, testEvent.Slug, &GetEventBySlugQueryParams{
 			IncludeChat:     &includeChat,
 			IncludeTemplate: &includeTemplate,
 		})
@@ -319,9 +326,10 @@ func TestGetEventBySlugWithIndividualParams(t *testing.T) {
 
 func TestGetEventByIDWithIndividualParams(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// First get some events
-	events, err := client.GetEvents(&GetEventsParams{Limit: 5})
+	events, err := client.GetEvents(ctx, &GetEventsParams{Limit: 5})
 	if err != nil {
 		t.Fatalf("GetEvents failed: %v", err)
 	}
@@ -334,7 +342,7 @@ func TestGetEventByIDWithIndividualParams(t *testing.T) {
 
 	t.Run("OnlyIncludeChat", func(t *testing.T) {
 		includeChat := true
-		fetchedEvent, err := client.GetEventByID(testEvent.ID, &GetEventByIDQueryParams{
+		fetchedEvent, err := client.GetEventByID(ctx, testEvent.ID, &GetEventByIDQueryParams{
 			IncludeChat: &includeChat,
 		})
 		if err != nil {
@@ -349,7 +357,7 @@ func TestGetEventByIDWithIndividualParams(t *testing.T) {
 
 	t.Run("OnlyIncludeTemplate", func(t *testing.T) {
 		includeTemplate := true
-		fetchedEvent, err := client.GetEventByID(testEvent.ID, &GetEventByIDQueryParams{
+		fetchedEvent, err := client.GetEventByID(ctx, testEvent.ID, &GetEventByIDQueryParams{
 			IncludeTemplate: &includeTemplate,
 		})
 		if err != nil {
@@ -365,7 +373,7 @@ func TestGetEventByIDWithIndividualParams(t *testing.T) {
 	t.Run("BothParams", func(t *testing.T) {
 		includeChat := true
 		includeTemplate := true
-		fetchedEvent, err := client.GetEventByID(testEvent.ID, &GetEventByIDQueryParams{
+		fetchedEvent, err := client.GetEventByID(ctx, testEvent.ID, &GetEventByIDQueryParams{
 			IncludeChat:     &includeChat,
 			IncludeTemplate: &includeTemplate,
 		})
@@ -382,7 +390,7 @@ func TestGetEventByIDWithIndividualParams(t *testing.T) {
 	t.Run("WithFalseValues", func(t *testing.T) {
 		includeChat := false
 		includeTemplate := false
-		fetchedEvent, err := client.GetEventByID(testEvent.ID, &GetEventByIDQueryParams{
+		fetchedEvent, err := client.GetEventByID(ctx, testEvent.ID, &GetEventByIDQueryParams{
 			IncludeChat:     &includeChat,
 			IncludeTemplate: &includeTemplate,
 		})
@@ -397,7 +405,7 @@ func TestGetEventByIDWithIndividualParams(t *testing.T) {
 	})
 
 	t.Run("NilParams", func(t *testing.T) {
-		fetchedEvent, err := client.GetEventByID(testEvent.ID, nil)
+		fetchedEvent, err := client.GetEventByID(ctx, testEvent.ID, nil)
 		if err != nil {
 			t.Errorf("GetEventByID with nil params failed: %v", err)
 			return
@@ -411,9 +419,10 @@ func TestGetEventByIDWithIndividualParams(t *testing.T) {
 
 func TestGetEventTags(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// First get some events
-	events, err := client.GetEvents(&GetEventsParams{Limit: 10})
+	events, err := client.GetEvents(ctx, &GetEventsParams{Limit: 10})
 	if err != nil {
 		t.Fatalf("GetEvents failed: %v", err)
 	}
@@ -430,7 +439,7 @@ func TestGetEventTags(t *testing.T) {
 		}
 
 		t.Run("Tags_"+event.ID, func(t *testing.T) {
-			tags, err := client.GetEventTags(event.ID)
+			tags, err := client.GetEventTags(ctx, event.ID)
 			if err != nil {
 				t.Errorf("GetEventTags failed for event ID %s: %v", event.ID, err)
 				return
@@ -462,10 +471,11 @@ func TestGetEventTags(t *testing.T) {
 
 func TestAllEventsFunctions(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Step 1: Get events
 	t.Log("Step 1: Fetching events...")
-	events, err := client.GetEvents(&GetEventsParams{Limit: 3})
+	events, err := client.GetEvents(ctx, &GetEventsParams{Limit: 3})
 	if err != nil {
 		t.Fatalf("GetEvents failed: %v", err)
 	}
@@ -488,7 +498,7 @@ func TestAllEventsFunctions(t *testing.T) {
 
 		// Test GetEventByID
 		t.Run("GetEventByID_"+event.ID, func(t *testing.T) {
-			fetchedEvent, err := client.GetEventByID(event.ID, nil)
+			fetchedEvent, err := client.GetEventByID(ctx, event.ID, nil)
 			if err != nil {
 				t.Errorf("GetEventByID failed: %v", err)
 				return
@@ -504,7 +514,7 @@ func TestAllEventsFunctions(t *testing.T) {
 		// Test GetEventBySlug (if slug exists)
 		if event.Slug != "" {
 			t.Run("GetEventBySlug_"+event.Slug, func(t *testing.T) {
-				fetchedEvent, err := client.GetEventBySlug(event.Slug, nil)
+				fetchedEvent, err := client.GetEventBySlug(ctx, event.Slug, nil)
 				if err != nil {
 					t.Errorf("GetEventBySlug failed: %v", err)
 					return
@@ -522,7 +532,7 @@ func TestAllEventsFunctions(t *testing.T) {
 
 		// Test GetEventTags
 		t.Run("GetEventTags_"+event.ID, func(t *testing.T) {
-			tags, err := client.GetEventTags(event.ID)
+			tags, err := client.GetEventTags(ctx, event.ID)
 			if err != nil {
 				t.Errorf("GetEventTags failed: %v", err)
 				return

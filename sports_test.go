@@ -1,16 +1,18 @@
 package polymarketgamma
 
 import (
+	"context"
 	"net/http"
 	"testing"
 )
 
 func TestGetTeams(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Test fetching teams without parameters
 	t.Run("FetchTeamsNoParams", func(t *testing.T) {
-		teams, err := client.GetTeams(nil)
+		teams, err := client.GetTeams(ctx, nil)
 		if err != nil {
 			t.Fatalf("Failed to fetch teams: %v", err)
 		}
@@ -35,7 +37,7 @@ func TestGetTeams(t *testing.T) {
 			Limit: limit,
 		}
 
-		teams, err := client.GetTeams(params)
+		teams, err := client.GetTeams(ctx, params)
 		if err != nil {
 			t.Fatalf("Failed to fetch teams with limit: %v", err)
 		}
@@ -54,7 +56,7 @@ func TestGetTeams(t *testing.T) {
 			League: []string{"NBA"},
 		}
 
-		teams, err := client.GetTeams(params)
+		teams, err := client.GetTeams(ctx, params)
 		if err != nil {
 			t.Fatalf("Failed to fetch teams with league filter: %v", err)
 		}
@@ -72,8 +74,9 @@ func TestGetTeams(t *testing.T) {
 
 func TestGetSportsMetadata(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
-	metadata, err := client.GetSportsMetadata()
+	metadata, err := client.GetSportsMetadata(ctx, )
 	if err != nil {
 		t.Fatalf("Failed to fetch sports metadata: %v", err)
 	}

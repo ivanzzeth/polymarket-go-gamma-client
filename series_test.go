@@ -1,16 +1,18 @@
 package polymarketgamma
 
 import (
+	"context"
 	"net/http"
 	"testing"
 )
 
 func TestAllSeriesFunctions(t *testing.T) {
 	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
 
 	// Step 1: Get series
 	t.Log("Step 1: Fetching series...")
-	seriesList, err := client.GetSeries(&GetSeriesParams{Limit: 3})
+	seriesList, err := client.GetSeries(ctx, &GetSeriesParams{Limit: 3})
 	if err != nil {
 		t.Fatalf("GetSeries failed: %v", err)
 	}
@@ -33,7 +35,7 @@ func TestAllSeriesFunctions(t *testing.T) {
 
 		// Test GetSeriesByID without chat
 		t.Run("GetSeriesByID_"+series.ID, func(t *testing.T) {
-			fetchedSeries, err := client.GetSeriesByID(series.ID, nil)
+			fetchedSeries, err := client.GetSeriesByID(ctx, series.ID, nil)
 			if err != nil {
 				t.Errorf("GetSeriesByID failed: %v", err)
 				return
@@ -49,7 +51,7 @@ func TestAllSeriesFunctions(t *testing.T) {
 		// Test GetSeriesByID with chat included
 		t.Run("GetSeriesByID_WithChat_"+series.ID, func(t *testing.T) {
 			includeChat := true
-			fetchedSeries, err := client.GetSeriesByID(series.ID, &GetSeriesByIDQueryParams{
+			fetchedSeries, err := client.GetSeriesByID(ctx, series.ID, &GetSeriesByIDQueryParams{
 				IncludeChat: &includeChat,
 			})
 			if err != nil {
