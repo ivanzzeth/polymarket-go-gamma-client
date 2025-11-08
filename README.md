@@ -10,10 +10,12 @@ All market data necessary for market resolution is available on-chain (ie ancill
 
 - Complete Go SDK for Polymarket Gamma API
 - Type-safe API with comprehensive market data structures
-- Support for Markets, Events, Series, and Search endpoints
+- Support for Markets, Events, Series, Search, Sports, and Tags endpoints
 - Real-world examples for trading opportunity discovery
 
 ## Installation
+
+Requires Go 1.24 or later.
 
 ```bash
 go get github.com/ivanzzeth/polymarket-go-gamma-client
@@ -25,6 +27,7 @@ go get github.com/ivanzzeth/polymarket-go-gamma-client
 package main
 
 import (
+    "context"
     "fmt"
     "log"
     "net/http"
@@ -42,7 +45,7 @@ func main() {
         Closed: &closed,
     }
 
-    markets, err := client.GetMarkets(params)
+    markets, err := client.GetMarkets(context.Background(), params)
     if err != nil {
         log.Fatal(err)
     }
@@ -74,7 +77,20 @@ func main() {
 - `Search()` - Search markets, events, and profiles
 
 ### Health
-- `Health()` - Check API health status
+- `HealthCheck()` - Check API health status
+
+### Sports
+- `GetTeams()` - List sports teams with filtering
+- `GetSportsMetadata()` - Get sports metadata including images and resolution sources
+
+### Tags
+- `GetTags()` - List tags with filtering
+- `GetTagByID()` - Get single tag by ID
+- `GetTagBySlug()` - Get single tag by slug
+- `GetRelatedTagsByID()` - Get related tags by tag ID
+- `GetRelatedTagsBySlug()` - Get related tags by tag slug
+- `GetRelatedTagsDetailByID()` - Get detailed tag information for related tags by ID
+- `GetRelatedTagsDetailBySlug()` - Get detailed tag information for related tags by slug
 
 ## Examples
 
@@ -244,4 +260,3 @@ For issues and questions:
 - Open an issue on GitHub
 - Check existing examples for reference
 - Review ANALYSIS.md for strategy details
-
