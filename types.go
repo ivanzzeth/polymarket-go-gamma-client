@@ -81,10 +81,33 @@ type StringOrArray []string
 
 // UnmarshalJSON implements the json.Unmarshaler interface
 func (sa *StringOrArray) UnmarshalJSON(b []byte) error {
-	// Try to unmarshal as array first
+	// Handle null explicitly
+	if string(b) == "null" {
+		*sa = StringOrArray([]string{})
+		return nil
+	}
+
+	// Try to unmarshal as 1D array first
 	var arr []string
 	if err := json.Unmarshal(b, &arr); err == nil {
-		*sa = StringOrArray(arr)
+		// Ensure non-nil slice (in case of null)
+		if arr == nil {
+			*sa = StringOrArray([]string{})
+		} else {
+			*sa = StringOrArray(arr)
+		}
+		return nil
+	}
+
+	// Try to unmarshal as 2D array and flatten it
+	var arr2D [][]string
+	if err := json.Unmarshal(b, &arr2D); err == nil {
+		// Flatten the 2D array into 1D
+		var flattened []string
+		for _, innerArr := range arr2D {
+			flattened = append(flattened, innerArr...)
+		}
+		*sa = StringOrArray(flattened)
 		return nil
 	}
 
@@ -355,8 +378,7 @@ type Market struct {
 	UpperBound string `json:"upperBound"`
 
 	// Outcomes and pricing
-	Outcomes StringOrArray `json:"outcomes"`
-	// TODO: FIX [["0.0000004113679809846114013590098187297978", "0.9999995886320190153885986409901813"]]
+	Outcomes      StringOrArray `json:"outcomes"`
 	OutcomePrices StringOrArray `json:"outcomePrices"`
 	ShortOutcomes StringOrArray `json:"shortOutcomes"`
 
