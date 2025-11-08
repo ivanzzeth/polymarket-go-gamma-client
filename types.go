@@ -71,6 +71,10 @@ func (ct NormalizedTime) Format(layout string) string {
 	return time.Time(ct).Format(layout)
 }
 
+func (ct NormalizedTime) String() string {
+	return ct.Time().String()
+}
+
 // StringOrArray is a custom type that can unmarshal both string and array from JSON
 // API sometimes returns these fields as strings, sometimes as arrays
 type StringOrArray []string
@@ -324,10 +328,10 @@ type Market struct {
 	ResolutionSource string         `json:"resolutionSource"`
 	EndDate          NormalizedTime `json:"endDate"`
 	StartDate        NormalizedTime `json:"startDate"`
-	EndDateISO       NormalizedTime `json:"endDateIso"`
-	StartDateISO     NormalizedTime `json:"startDateIso"`
+	EndDateISO       string         `json:"endDateIso"`
+	StartDateISO     string         `json:"startDateIso"`
 	UMAEndDate       NormalizedTime `json:"umaEndDate"`
-	UMAEndDateISO    NormalizedTime `json:"umaEndDateIso"`
+	UMAEndDateISO    string         `json:"umaEndDateIso"`
 	ClosedTime       NormalizedTime `json:"closedTime"`
 
 	// Market mechanics
@@ -351,7 +355,8 @@ type Market struct {
 	UpperBound string `json:"upperBound"`
 
 	// Outcomes and pricing
-	Outcomes      StringOrArray `json:"outcomes"`
+	Outcomes StringOrArray `json:"outcomes"`
+	// TODO: FIX [["0.0000004113679809846114013590098187297978", "0.9999995886320190153885986409901813"]]
 	OutcomePrices StringOrArray `json:"outcomePrices"`
 	ShortOutcomes StringOrArray `json:"shortOutcomes"`
 
