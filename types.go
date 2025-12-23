@@ -402,7 +402,13 @@ type Market struct {
 	UpperBound string `json:"upperBound"`
 
 	// Outcomes and pricing
-	Outcomes      StringOrArray `json:"outcomes"`
+	// Outcomes represents the possible outcomes for a market.
+	// API returns this as a JSON-encoded string (e.g., "[\"Yes\", \"No\"]") which is automatically parsed into a string array.
+	// Example: ["Yes", "No"] for binary markets, or ["Option A", "Option B", "Option C"] for categorical markets.
+	Outcomes StringOrArray `json:"outcomes"`
+	// OutcomePrices represents the current prices for each outcome, typically as decimal strings.
+	// API returns this as a JSON-encoded string (e.g., "[\"0.52\", \"0.48\"]") which is automatically parsed into a string array.
+	// Example: ["0.52", "0.48"] for binary markets, where prices sum to 1.0.
 	OutcomePrices StringOrArray `json:"outcomePrices"`
 	ShortOutcomes StringOrArray `json:"shortOutcomes"`
 
