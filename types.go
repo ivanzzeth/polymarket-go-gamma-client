@@ -116,9 +116,33 @@ func (sa *StringOrArray) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, &s); err == nil {
 		if s == "" {
 			*sa = StringOrArray([]string{})
-		} else {
-			*sa = StringOrArray([]string{s})
+			return nil
 		}
+
+		// Check if the string is a JSON array (e.g., "[\"Yes\", \"No\"]")
+		// This handles cases where the API returns a JSON-encoded array as a string
+		if len(s) >= 2 && s[0] == '[' && s[len(s)-1] == ']' {
+			// Try to unmarshal the string as a JSON array
+			var arr []string
+			if err := json.Unmarshal([]byte(s), &arr); err == nil {
+				*sa = StringOrArray(arr)
+				return nil
+			}
+
+			// Try as 2D array and flatten
+			var arr2D [][]string
+			if err := json.Unmarshal([]byte(s), &arr2D); err == nil {
+				var flattened []string
+				for _, innerArr := range arr2D {
+					flattened = append(flattened, innerArr...)
+				}
+				*sa = StringOrArray(flattened)
+				return nil
+			}
+		}
+
+		// If not a JSON array, treat as a single string value
+		*sa = StringOrArray([]string{s})
 		return nil
 	}
 
