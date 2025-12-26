@@ -312,6 +312,16 @@ func TestStringOrArray_RealWorldScenarios(t *testing.T) {
 			jsonData: `{"outcomePrices": [["0.5", "0.5"]]}`,
 			field:    "outcomePrices",
 		},
+		{
+			name:     "outcomes as JSON string (API format)",
+			jsonData: `{"outcomes": "[\"Yes\", \"No\"]"}`,
+			field:    "outcomes",
+		},
+		{
+			name:     "outcomePrices as JSON string (API format)",
+			jsonData: `{"outcomePrices": "[\"0\", \"0\"]"}`,
+			field:    "outcomePrices",
+		},
 	}
 
 	for _, tt := range tests {
@@ -351,4 +361,3 @@ func TestStringOrArray_RealWorldScenarios(t *testing.T) {
 		})
 	}
 }
-

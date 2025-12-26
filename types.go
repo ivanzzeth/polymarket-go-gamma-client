@@ -167,9 +167,33 @@ func (sa *StringOrArray) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, &s); err == nil {
 		if s == "" {
 			*sa = StringOrArray([]string{})
-		} else {
-			*sa = StringOrArray([]string{s})
+			return nil
 		}
+
+		// Check if the string is a JSON array (e.g., "[\"Yes\", \"No\"]")
+		// This handles cases where the API returns a JSON-encoded array as a string
+		if len(s) >= 2 && s[0] == '[' && s[len(s)-1] == ']' {
+			// Try to unmarshal the string as a JSON array
+			var arr []string
+			if err := json.Unmarshal([]byte(s), &arr); err == nil {
+				*sa = StringOrArray(arr)
+				return nil
+			}
+
+			// Try as 2D array and flatten
+			var arr2D [][]string
+			if err := json.Unmarshal([]byte(s), &arr2D); err == nil {
+				var flattened []string
+				for _, innerArr := range arr2D {
+					flattened = append(flattened, innerArr...)
+				}
+				*sa = StringOrArray(flattened)
+				return nil
+			}
+		}
+
+		// If not a JSON array, treat as a single string value
+		*sa = StringOrArray([]string{s})
 		return nil
 	}
 
@@ -429,7 +453,13 @@ type Market struct {
 	UpperBound string `json:"upperBound"`
 
 	// Outcomes and pricing
-	Outcomes      StringOrArray `json:"outcomes"`
+	// Outcomes represents the possible outcomes for a market.
+	// API returns this as a JSON-encoded string (e.g., "[\"Yes\", \"No\"]") which is automatically parsed into a string array.
+	// Example: ["Yes", "No"] for binary markets, or ["Option A", "Option B", "Option C"] for categorical markets.
+	Outcomes StringOrArray `json:"outcomes"`
+	// OutcomePrices represents the current prices for each outcome, typically as decimal strings.
+	// API returns this as a JSON-encoded string (e.g., "[\"0.52\", \"0.48\"]") which is automatically parsed into a string array.
+	// Example: ["0.52", "0.48"] for binary markets, where prices sum to 1.0.
 	OutcomePrices StringOrArray `json:"outcomePrices"`
 	ShortOutcomes StringOrArray `json:"shortOutcomes"`
 
