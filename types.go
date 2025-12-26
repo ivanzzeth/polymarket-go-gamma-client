@@ -17,21 +17,36 @@ func (ct *NormalizedTime) UnmarshalJSON(b []byte) error {
 		return nil
 	}
 
+	// Normalize timezone offset format: convert "+00" to "+00:00" for Go's time.Parse
+	// API sometimes returns "2020-11-02 16:31:01+00" instead of "2020-11-02 16:31:01+00:00"
+	// Only normalize if it ends with +XX or -XX (2 digits) and not already +XX:00 format
+	if len(s) >= 3 {
+		last3 := s[len(s)-3:]
+		// Check if it ends with +XX or -XX (2 digits)
+		if (last3[0] == '+' || last3[0] == '-') && last3[1] >= '0' && last3[1] <= '9' && last3[2] >= '0' && last3[2] <= '9' {
+			// Check if it's NOT already in +XX:00 format (check last 6 chars)
+			if len(s) < 6 || s[len(s)-6:] != last3+":00" {
+				// Not in +XX:00 format, convert "+00" to "+00:00"
+				s = s[:len(s)-3] + last3 + ":00"
+			}
+		}
+	}
+
 	// Try different time formats
-	// Note: Simple date format should be tried early to avoid partial matches
+	// Note: RFC3339 format (e.g., "2024-11-06T15:17:41Z") should be tried first
 	formats := []string{
-		time.RFC3339,
-		time.RFC3339Nano,
-		"2006-01-02T15:04:05Z",
-		"2006-01-02T15:04:05.999999999Z",
+		time.RFC3339,                    // "2006-01-02T15:04:05Z07:00" or "2006-01-02T15:04:05Z"
+		time.RFC3339Nano,                // "2006-01-02T15:04:05.999999999Z07:00"
+		"2006-01-02T15:04:05Z",          // Explicit Z format (e.g., "2024-11-06T15:17:41Z")
+		"2006-01-02T15:04:05.999999999Z", // With nanoseconds and Z
 		"2006-01-02T15:04:05.999999999Z07:00",
 		"2006-01-02T15:04:05Z07:00",
-		"2006-01-02 15:04:05.999999999-07",
-		"2006-01-02 15:04:05.999999999+00",
-		"2006-01-02 15:04:05-07",
-		"2006-01-02 15:04:05+00",
-		"2006-01-02",      // Simple date format (YYYY-MM-DD)
-		"January 2, 2006", // Long month name format (e.g., "November 1, 2022")
+		"2006-01-02 15:04:05.999999999-07:00",
+		"2006-01-02 15:04:05.999999999+00:00",
+		"2006-01-02 15:04:05-07:00",
+		"2006-01-02 15:04:05+00:00",     // Format like "2020-11-02 16:31:01+00:00" (normalized)
+		"2006-01-02",                     // Simple date format (YYYY-MM-DD)
+		"January 2, 2006",               // Long month name format (e.g., "November 1, 2022")
 	}
 
 	var err error
@@ -44,6 +59,7 @@ func (ct *NormalizedTime) UnmarshalJSON(b []byte) error {
 		}
 	}
 
+	// If all formats fail, return the last error
 	return err
 }
 
@@ -93,6 +109,41 @@ func (sa *StringOrArray) UnmarshalJSON(b []byte) error {
 		// Ensure non-nil slice (in case of null)
 		if arr == nil {
 			*sa = StringOrArray([]string{})
+			return nil
+		}
+
+		// Check if any element is a JSON array string (e.g., "[\"Up\", \"Down\"]")
+		// This handles cases where the API returns an array containing a JSON-encoded array string
+		var flattened []string
+		needsFlattening := false
+		for _, s := range arr {
+			// Check if the string looks like a JSON array
+			if len(s) >= 2 && s[0] == '[' && s[len(s)-1] == ']' {
+				// Try to unmarshal the string as a JSON array
+				var innerArr []string
+				if err := json.Unmarshal([]byte(s), &innerArr); err == nil {
+					flattened = append(flattened, innerArr...)
+					needsFlattening = true
+					continue
+				}
+
+				// Try as 2D array and flatten
+				var innerArr2D [][]string
+				if err := json.Unmarshal([]byte(s), &innerArr2D); err == nil {
+					for _, innerArr := range innerArr2D {
+						flattened = append(flattened, innerArr...)
+					}
+					needsFlattening = true
+					continue
+				}
+			}
+
+			// Not a JSON array string, keep as-is
+			flattened = append(flattened, s)
+		}
+
+		if needsFlattening {
+			*sa = StringOrArray(flattened)
 		} else {
 			*sa = StringOrArray(arr)
 		}
@@ -547,7 +598,7 @@ type Market struct {
 	// RFQ
 	RFQEnabled bool `json:"rfqEnabled"`
 
-	// Event timing
+	// Event timing (may be empty/null for backward compatibility)
 	EventStartTime NormalizedTime `json:"eventStartTime"`
 }
 
