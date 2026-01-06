@@ -20,7 +20,7 @@ func (ct *NormalizedTime) UnmarshalJSON(b []byte) error {
 	// Normalize timezone offset format: convert "+00" to "+00:00" for Go's time.Parse
 	// API sometimes returns "2020-11-02 16:31:01+00" instead of "2020-11-02 16:31:01+00:00"
 	// Only normalize if it ends with +XX or -XX (2 digits) and not already +XX:00 format
-	if len(s) >= 3 {
+	if len(s) >= 10 {
 		last3 := s[len(s)-3:]
 		// Check if it ends with +XX or -XX (2 digits)
 		if (last3[0] == '+' || last3[0] == '-') && last3[1] >= '0' && last3[1] <= '9' && last3[2] >= '0' && last3[2] <= '9' {
