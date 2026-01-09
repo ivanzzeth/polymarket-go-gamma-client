@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -253,5 +254,70 @@ func TestMarket_OutcomesParsing(t *testing.T) {
 				t.Errorf("Outcomes count mismatch: got %d, want %d", len(market.Outcomes), tt.expected)
 			}
 		})
+	}
+}
+
+// TestMarketByConditionID queries a market by conditionID from environment variable
+// and prints all fields to help debug market status issues
+func TestMarketByConditionID(t *testing.T) {
+	conditionID := os.Getenv("CONDITION_ID")
+	if conditionID == "" {
+		t.Skip("CONDITION_ID environment variable not set, skipping test")
+	}
+
+	client := NewClient(http.DefaultClient)
+	ctx := context.Background()
+
+	t.Logf("Querying market with conditionID: %s", conditionID)
+
+	// Query market by conditionID
+	markets, err := client.GetMarkets(ctx, &GetMarketsParams{
+		ConditionIDs: []string{conditionID},
+		Limit:        1,
+	})
+	if err != nil {
+		t.Fatalf("GetMarkets failed: %v", err)
+	}
+
+	if len(markets) == 0 {
+		t.Fatalf("No market found with conditionID: %s", conditionID)
+	}
+
+	market := markets[0]
+	t.Logf("\n=== Market Details for ConditionID: %s ===\n", conditionID)
+
+	// Print all fields using JSON marshaling for complete visibility
+	marketJSON, err := json.MarshalIndent(market, "", "  ")
+	if err != nil {
+		t.Fatalf("Failed to marshal market to JSON: %v", err)
+	}
+	t.Logf("\n=== Complete Market JSON ===\n%s\n", string(marketJSON))
+
+	// Print key status fields explicitly
+	t.Logf("\n=== Key Status Fields ===\n")
+	t.Logf("ID: %s", market.ID)
+	t.Logf("Question: %s", market.Question)
+	t.Logf("ConditionID: %s", market.ConditionID)
+	t.Logf("Slug: %s", market.Slug)
+	t.Logf("Active: %v", market.Active)
+	t.Logf("Closed: %v", market.Closed)
+	t.Logf("Archived: %v", market.Archived)
+	t.Logf("ClosedTime: %v (IsZero: %v)", market.ClosedTime, market.ClosedTime.IsZero())
+	t.Logf("StartDate: %v (IsZero: %v)", market.StartDate, market.StartDate.IsZero())
+	t.Logf("EndDate: %v (IsZero: %v)", market.EndDate, market.EndDate.IsZero())
+	t.Logf("UMAEndDate: %v (IsZero: %v)", market.UMAEndDate, market.UMAEndDate.IsZero())
+	t.Logf("Outcomes: %v", market.Outcomes)
+	t.Logf("OutcomePrices: %v", market.OutcomePrices)
+	t.Logf("UMAResolutionStatus: %s", market.UMAResolutionStatus)
+	t.Logf("AutomaticallyResolved: %v", market.AutomaticallyResolved)
+	t.Logf("ResolvedBy: %s", market.ResolvedBy)
+
+	// Check Events if available
+	if len(market.Events) > 0 {
+		t.Logf("\n=== Events ===\n")
+		for i, event := range market.Events {
+			eventJSON, _ := json.MarshalIndent(event, "", "  ")
+			t.Logf("Event %d:\n%s\n", i, string(eventJSON))
+		}
 	}
 }
