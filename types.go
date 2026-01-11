@@ -2,6 +2,7 @@ package polymarketgamma
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 )
@@ -406,94 +407,108 @@ type Pagination struct {
 	TotalResults int  `json:"totalResults"`
 }
 
+type ClobTokenIdsType []string
+
+func (ctit *ClobTokenIdsType) UnmarshalJSON(buf []byte) error {
+	var result []string
+	tmpStr := strings.Replace(string(buf[1:len(buf)-1]), `\"`, `"`, -1)
+	err := json.Unmarshal([]byte(tmpStr), &result)
+	if nil != err {
+		fmt.Printf("Unmarshal [%s] failed : %s,  tmpBuf:[%s]\n", string(buf), err.Error(), tmpStr)
+		return err
+	}
+	*ctit = result
+	return nil
+}
+
 // Market represents a market from the Gamma API /markets endpoint
 // This contains extensive metadata beyond what's in the CLOB API Market type
 type Market struct {
-	ID                           string         `json:"id"`
-	Question                     string         `json:"question"`
-	ConditionID                  string         `json:"conditionId"`
-	Slug                         string         `json:"slug"`
-	ResolutionSource             string         `json:"resolutionSource"`
-	EndDate                      NormalizedTime `json:"endDate"`
-	Liquidity                    string         `json:"liquidity"`
-	StartDate                    NormalizedTime `json:"startDate"`
-	Image                        string         `json:"image"`
-	Icon                         string         `json:"icon"`
-	Description                  string         `json:"description"`
-	Outcomes                     string         `json:"outcomes"`
-	Volume                       string         `json:"volume"`
-	Active                       bool           `json:"active"`
-	Closed                       bool           `json:"closed"`
-	MarketMakerAddress           string         `json:"marketMakerAddress"`
-	CreatedAt                    NormalizedTime `json:"createdAt"`
-	UpdatedAt                    NormalizedTime `json:"updatedAt"`
-	New                          bool           `json:"new"`
-	Featured                     bool           `json:"featured"`
-	Archived                     bool           `json:"archived"`
-	Restricted                   bool           `json:"restricted"`
-	GroupItemThreshold           string         `json:"groupItemThreshold"`
-	QuestionID                   string         `json:"questionID"`
-	EnableOrderBook              bool           `json:"enableOrderBook"`
-	OrderPriceMinTickSize        float64        `json:"orderPriceMinTickSize"`
-	OrderMinSize                 int            `json:"orderMinSize"`
-	VolumeNum                    int            `json:"volumeNum"`
-	LiquidityNum                 int            `json:"liquidityNum"`
-	EndDateIso                   string         `json:"endDateIso"`
-	HasReviewedDates             bool           `json:"hasReviewedDates"`
-	Volume24Hr                   int            `json:"volume24hr"`
-	Volume1Wk                    int            `json:"volume1wk"`
-	Volume1Mo                    int            `json:"volume1mo"`
-	Volume1Yr                    int            `json:"volume1yr"`
-	ClobTokenIds                 string         `json:"clobTokenIds"`
-	Volume24HrAmm                int            `json:"volume24hrAmm"`
-	Volume1WkAmm                 int            `json:"volume1wkAmm"`
-	Volume1MoAmm                 int            `json:"volume1moAmm"`
-	Volume1YrAmm                 int            `json:"volume1yrAmm"`
-	Volume24HrClob               int            `json:"volume24hrClob"`
-	Volume1WkClob                int            `json:"volume1wkClob"`
-	Volume1MoClob                int            `json:"volume1moClob"`
-	Volume1YrClob                int            `json:"volume1yrClob"`
-	VolumeAmm                    int            `json:"volumeAmm"`
-	VolumeClob                   int            `json:"volumeClob"`
-	LiquidityAmm                 int            `json:"liquidityAmm"`
-	LiquidityClob                int            `json:"liquidityClob"`
-	MakerBaseFee                 int            `json:"makerBaseFee"`
-	TakerBaseFee                 int            `json:"takerBaseFee"`
-	AcceptingOrders              bool           `json:"acceptingOrders"`
-	NegRisk                      bool           `json:"negRisk"`
-	Ready                        bool           `json:"ready"`
-	Funded                       bool           `json:"funded"`
-	AcceptingOrdersTimestamp     NormalizedTime `json:"acceptingOrdersTimestamp"`
-	Cyom                         bool           `json:"cyom"`
-	Competitive                  int            `json:"competitive"`
-	PagerDutyNotificationEnabled bool           `json:"pagerDutyNotificationEnabled"`
-	Approved                     bool           `json:"approved"`
-	RewardsMinSize               int            `json:"rewardsMinSize"`
-	RewardsMaxSpread             int            `json:"rewardsMaxSpread"`
-	Spread                       int            `json:"spread"`
-	OneDayPriceChange            int            `json:"oneDayPriceChange"`
-	OneHourPriceChange           int            `json:"oneHourPriceChange"`
-	OneWeekPriceChange           int            `json:"oneWeekPriceChange"`
-	OneMonthPriceChange          int            `json:"oneMonthPriceChange"`
-	OneYearPriceChange           int            `json:"oneYearPriceChange"`
-	LastTradePrice               int            `json:"lastTradePrice"`
-	BestBid                      int            `json:"bestBid"`
-	BestAsk                      int            `json:"bestAsk"`
-	AutomaticallyActive          bool           `json:"automaticallyActive"`
-	ClearBookOnStart             bool           `json:"clearBookOnStart"`
-	ShowGmpSeries                bool           `json:"showGmpSeries"`
-	ShowGmpOutcome               bool           `json:"showGmpOutcome"`
-	ManualActivation             bool           `json:"manualActivation"`
-	NegRiskOther                 bool           `json:"negRiskOther"`
-	UmaResolutionStatuses        string         `json:"umaResolutionStatuses"`
-	PendingDeployment            bool           `json:"pendingDeployment"`
-	Deploying                    bool           `json:"deploying"`
-	RfqEnabled                   bool           `json:"rfqEnabled"`
-	EventStartTime               NormalizedTime `json:"eventStartTime"`
-	HoldingRewardsEnabled        bool           `json:"holdingRewardsEnabled"`
-	FeesEnabled                  bool           `json:"feesEnabled"`
-	RequiresTranslation          bool           `json:"requiresTranslation"`
-	MakerRebatesFeeShareBps      int            `json:"makerRebatesFeeShareBps"`
+	ID                           string           `json:"id"`
+	Question                     string           `json:"question"`
+	ConditionID                  string           `json:"conditionId"`
+	Slug                         string           `json:"slug"`
+	ResolutionSource             string           `json:"resolutionSource"`
+	EndDate                      NormalizedTime   `json:"endDate"`
+	Liquidity                    string           `json:"liquidity"`
+	StartDate                    NormalizedTime   `json:"startDate"`
+	Image                        string           `json:"image"`
+	Icon                         string           `json:"icon"`
+	Description                  string           `json:"description"`
+	Outcomes                     string           `json:"outcomes"`
+	Volume                       string           `json:"volume"`
+	Active                       bool             `json:"active"`
+	Closed                       bool             `json:"closed"`
+	MarketMakerAddress           string           `json:"marketMakerAddress"`
+	CreatedAt                    NormalizedTime   `json:"createdAt"`
+	UpdatedAt                    NormalizedTime   `json:"updatedAt"`
+	New                          bool             `json:"new"`
+	Featured                     bool             `json:"featured"`
+	Archived                     bool             `json:"archived"`
+	Restricted                   bool             `json:"restricted"`
+	GroupItemThreshold           string           `json:"groupItemThreshold"`
+	QuestionID                   string           `json:"questionID"`
+	EnableOrderBook              bool             `json:"enableOrderBook"`
+	OrderPriceMinTickSize        float64          `json:"orderPriceMinTickSize"`
+	OrderMinSize                 int              `json:"orderMinSize"`
+	VolumeNum                    float64          `json:"volumeNum"`
+	LiquidityNum                 float64          `json:"liquidityNum"`
+	EndDateIso                   string           `json:"endDateIso"`
+	HasReviewedDates             bool             `json:"hasReviewedDates"`
+	Volume24Hr                   float64          `json:"volume24hr"`
+	Volume1Wk                    float64          `json:"volume1wk"`
+	Volume1Mo                    float64          `json:"volume1mo"`
+	Volume1Yr                    float64          `json:"volume1yr"`
+	ClobTokenIds                 ClobTokenIdsType `json:"clobTokenIds"`
+	Volume24HrAmm                int              `json:"volume24hrAmm"`
+	Volume1WkAmm                 int              `json:"volume1wkAmm"`
+	Volume1MoAmm                 int              `json:"volume1moAmm"`
+	Volume1YrAmm                 int              `json:"volume1yrAmm"`
+	Volume24HrClob               float64          `json:"volume24hrClob"`
+	Volume1WkClob                float64          `json:"volume1wkClob"`
+	Volume1MoClob                float64          `json:"volume1moClob"`
+	Volume1YrClob                float64          `json:"volume1yrClob"`
+	VolumeAmm                    int              `json:"volumeAmm"`
+	VolumeClob                   float64          `json:"volumeClob"`
+	LiquidityAmm                 int              `json:"liquidityAmm"`
+	LiquidityClob                float64          `json:"liquidityClob"`
+	MakerBaseFee                 int              `json:"makerBaseFee"`
+	TakerBaseFee                 int              `json:"takerBaseFee"`
+	AcceptingOrders              bool             `json:"acceptingOrders"`
+	NegRisk                      bool             `json:"negRisk"`
+	Ready                        bool             `json:"ready"`
+	Funded                       bool             `json:"funded"`
+	AcceptingOrdersTimestamp     NormalizedTime   `json:"acceptingOrdersTimestamp"`
+	Cyom                         bool             `json:"cyom"`
+	Competitive                  float64          `json:"competitive"`
+	PagerDutyNotificationEnabled bool             `json:"pagerDutyNotificationEnabled"`
+	Approved                     bool             `json:"approved"`
+	RewardsMinSize               float64          `json:"rewardsMinSize"`
+	RewardsMaxSpread             float64          `json:"rewardsMaxSpread"`
+	Spread                       float64          `json:"spread"`
+	OneDayPriceChange            float64          `json:"oneDayPriceChange"`
+	OneHourPriceChange           float64          `json:"oneHourPriceChange"`
+	OneWeekPriceChange           float64          `json:"oneWeekPriceChange"`
+	OneMonthPriceChange          float64          `json:"oneMonthPriceChange"`
+	OneYearPriceChange           float64          `json:"oneYearPriceChange"`
+	LastTradePrice               float64          `json:"lastTradePrice"`
+	BestBid                      float64          `json:"bestBid"`
+	BestAsk                      float64          `json:"bestAsk"`
+	AutomaticallyActive          bool             `json:"automaticallyActive"`
+	ClearBookOnStart             bool             `json:"clearBookOnStart"`
+	ShowGmpSeries                bool             `json:"showGmpSeries"`
+	ShowGmpOutcome               bool             `json:"showGmpOutcome"`
+	ManualActivation             bool             `json:"manualActivation"`
+	NegRiskOther                 bool             `json:"negRiskOther"`
+	UmaResolutionStatuses        string           `json:"umaResolutionStatuses"`
+	PendingDeployment            bool             `json:"pendingDeployment"`
+	Deploying                    bool             `json:"deploying"`
+	RfqEnabled                   bool             `json:"rfqEnabled"`
+	EventStartTime               NormalizedTime   `json:"eventStartTime"`
+	HoldingRewardsEnabled        bool             `json:"holdingRewardsEnabled"`
+	FeesEnabled                  bool             `json:"feesEnabled"`
+	RequiresTranslation          bool             `json:"requiresTranslation"`
+	MakerRebatesFeeShareBps      int              `json:"makerRebatesFeeShareBps"`
 }
 
 // ImageOptimized represents an optimized image resource
@@ -527,19 +542,19 @@ type Event struct {
 	New                 bool           `json:"new"`
 	Featured            bool           `json:"featured"`
 	Restricted          bool           `json:"restricted"`
-	Liquidity           int            `json:"liquidity,omitempty"`
-	Volume              int            `json:"volume,omitempty"`
+	Liquidity           float64        `json:"liquidity,omitempty"`
+	Volume              float64        `json:"volume,omitempty"`
 	OpenInterest        int            `json:"openInterest"`
 	CreatedAt           NormalizedTime `json:"createdAt"`
 	UpdatedAt           NormalizedTime `json:"updatedAt,omitempty"`
-	Competitive         int            `json:"competitive,omitempty"`
-	Volume24Hr          int            `json:"volume24hr,omitempty"`
-	Volume1Wk           int            `json:"volume1wk,omitempty"`
-	Volume1Mo           int            `json:"volume1mo,omitempty"`
-	Volume1Yr           int            `json:"volume1yr,omitempty"`
+	Competitive         float64        `json:"competitive,omitempty"`
+	Volume24Hr          float64        `json:"volume24hr,omitempty"`
+	Volume1Wk           float64        `json:"volume1wk,omitempty"`
+	Volume1Mo           float64        `json:"volume1mo,omitempty"`
+	Volume1Yr           float64        `json:"volume1yr,omitempty"`
 	EnableOrderBook     bool           `json:"enableOrderBook"`
 	LiquidityAmm        int            `json:"liquidityAmm,omitempty"`
-	LiquidityClob       int            `json:"liquidityClob,omitempty"`
+	LiquidityClob       float64        `json:"liquidityClob,omitempty"`
 	NegRisk             bool           `json:"negRisk,omitempty"`
 	CommentCount        int            `json:"commentCount"`
 	Markets             []Market       `json:"markets"`
