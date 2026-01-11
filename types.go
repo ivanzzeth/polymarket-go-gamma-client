@@ -35,18 +35,18 @@ func (ct *NormalizedTime) UnmarshalJSON(b []byte) error {
 	// Try different time formats
 	// Note: RFC3339 format (e.g., "2024-11-06T15:17:41Z") should be tried first
 	formats := []string{
-		time.RFC3339,                    // "2006-01-02T15:04:05Z07:00" or "2006-01-02T15:04:05Z"
-		time.RFC3339Nano,                // "2006-01-02T15:04:05.999999999Z07:00"
-		"2006-01-02T15:04:05Z",          // Explicit Z format (e.g., "2024-11-06T15:17:41Z")
+		time.RFC3339,                     // "2006-01-02T15:04:05Z07:00" or "2006-01-02T15:04:05Z"
+		time.RFC3339Nano,                 // "2006-01-02T15:04:05.999999999Z07:00"
+		"2006-01-02T15:04:05Z",           // Explicit Z format (e.g., "2024-11-06T15:17:41Z")
 		"2006-01-02T15:04:05.999999999Z", // With nanoseconds and Z
 		"2006-01-02T15:04:05.999999999Z07:00",
 		"2006-01-02T15:04:05Z07:00",
 		"2006-01-02 15:04:05.999999999-07:00",
 		"2006-01-02 15:04:05.999999999+00:00",
 		"2006-01-02 15:04:05-07:00",
-		"2006-01-02 15:04:05+00:00",     // Format like "2020-11-02 16:31:01+00:00" (normalized)
-		"2006-01-02",                     // Simple date format (YYYY-MM-DD)
-		"January 2, 2006",               // Long month name format (e.g., "November 1, 2022")
+		"2006-01-02 15:04:05+00:00", // Format like "2020-11-02 16:31:01+00:00" (normalized)
+		"2006-01-02",                // Simple date format (YYYY-MM-DD)
+		"January 2, 2006",           // Long month name format (e.g., "November 1, 2022")
 	}
 
 	var err error
@@ -409,227 +409,86 @@ type Pagination struct {
 // Market represents a market from the Gamma API /markets endpoint
 // This contains extensive metadata beyond what's in the CLOB API Market type
 type Market struct {
-	// Core market identifiers
-	ID          string `json:"id"`
-	Question    string `json:"question"`
-	ConditionID string `json:"conditionId"`
-	Slug        string `json:"slug"`
-	QuestionID  string `json:"questionID"`
-
-	// Display and branding
-	TwitterCardImage string `json:"twitterCardImage"`
-	Image            string `json:"image"`
-	Icon             string `json:"icon"`
-	Description      string `json:"description"`
-
-	// Resolution and timing
-	ResolutionSource string         `json:"resolutionSource"`
-	EndDate          NormalizedTime `json:"endDate"`
-	StartDate        NormalizedTime `json:"startDate"`
-	EndDateISO       string         `json:"endDateIso"`
-	StartDateISO     string         `json:"startDateIso"`
-	UMAEndDate       NormalizedTime `json:"umaEndDate"`
-	UMAEndDateISO    string         `json:"umaEndDateIso"`
-	ClosedTime       NormalizedTime `json:"closedTime"`
-
-	// Market mechanics
-	Category          string  `json:"category"`
-	AmmType           string  `json:"ammType"`
-	Liquidity         string  `json:"liquidity"`
-	LiquidityNum      float64 `json:"liquidityNum"`
-	Volume            string  `json:"volume"`
-	VolumeNum         float64 `json:"volumeNum"`
-	Fee               string  `json:"fee"`
-	DenominationToken string  `json:"denominationToken"`
-
-	// Sponsor information
-	SponsorName  string `json:"sponsorName"`
-	SponsorImage string `json:"sponsorImage"`
-
-	// Chart configuration
-	XAxisValue string `json:"xAxisValue"`
-	YAxisValue string `json:"yAxisValue"`
-	LowerBound string `json:"lowerBound"`
-	UpperBound string `json:"upperBound"`
-
-	// Outcomes and pricing
-	// Outcomes represents the possible outcomes for a market.
-	// API returns this as a JSON-encoded string (e.g., "[\"Yes\", \"No\"]") which is automatically parsed into a string array.
-	// Example: ["Yes", "No"] for binary markets, or ["Option A", "Option B", "Option C"] for categorical markets.
-	Outcomes StringOrArray `json:"outcomes"`
-	// OutcomePrices represents the current prices for each outcome, typically as decimal strings.
-	// API returns this as a JSON-encoded string (e.g., "[\"0.52\", \"0.48\"]") which is automatically parsed into a string array.
-	// Example: ["0.52", "0.48"] for binary markets, where prices sum to 1.0.
-	OutcomePrices StringOrArray `json:"outcomePrices"`
-	ShortOutcomes StringOrArray `json:"shortOutcomes"`
-
-	// Status flags
-	Active     bool `json:"active"`
-	Closed     bool `json:"closed"`
-	Archived   bool `json:"archived"`
-	New        bool `json:"new"`
-	Featured   bool `json:"featured"`
-	Restricted bool `json:"restricted"`
-	WideFormat bool `json:"wideFormat"`
-	Ready      bool `json:"ready"`
-	Funded     bool `json:"funded"`
-
-	// Market type and format
-	MarketType string `json:"marketType"`
-	FormatType string `json:"formatType"`
-
-	// Date boundaries
-	LowerBoundDate NormalizedTime `json:"lowerBoundDate"`
-	UpperBoundDate NormalizedTime `json:"upperBoundDate"`
-
-	// Contract and exchange
-	MarketMakerAddress string `json:"marketMakerAddress"`
-
-	// Metadata
-	CreatedBy int            `json:"createdBy"`
-	UpdatedBy int            `json:"updatedBy"`
-	CreatedAt NormalizedTime `json:"createdAt"`
-	UpdatedAt NormalizedTime `json:"updatedAt"`
-
-	// Marketing
-	MailchimpTag string `json:"mailchimpTag"`
-	ResolvedBy   string `json:"resolvedBy"`
-
-	// Grouping
-	MarketGroup        int    `json:"marketGroup"`
-	GroupItemTitle     string `json:"groupItemTitle"`
-	GroupItemThreshold string `json:"groupItemThreshold"`
-	GroupItemRange     string `json:"groupItemRange"`
-
-	// UMA resolution
-	UMAResolutionStatus   string `json:"umaResolutionStatus"`
-	UMAResolutionStatuses string `json:"umaResolutionStatuses"`
-	UMABond               string `json:"umaBond"`
-	UMAReward             string `json:"umaReward"`
-
-	// Order book configuration
-	EnableOrderBook       bool    `json:"enableOrderBook"`
-	OrderPriceMinTickSize float64 `json:"orderPriceMinTickSize"`
-	OrderMinSize          float64 `json:"orderMinSize"`
-	MakerBaseFee          int     `json:"makerBaseFee"`
-	TakerBaseFee          int     `json:"takerBaseFee"`
-	AcceptingOrders       bool    `json:"acceptingOrders"`
-	NotificationsEnabled  bool    `json:"notificationsEnabled"`
-
-	// Curation and scoring
-	CurationOrder int     `json:"curationOrder"`
-	Score         float64 `json:"score"`
-
-	// Review status
-	HasReviewedDates bool `json:"hasReviewedDates"`
-	ReadyForCron     bool `json:"readyForCron"`
-	CommentsEnabled  bool `json:"commentsEnabled"`
-
-	// Volume metrics
-	Volume24hr     float64 `json:"volume24hr"`
-	Volume1wk      float64 `json:"volume1wk"`
-	Volume1mo      float64 `json:"volume1mo"`
-	Volume1yr      float64 `json:"volume1yr"`
-	Volume24hrAmm  float64 `json:"volume24hrAmm"`
-	Volume1wkAmm   float64 `json:"volume1wkAmm"`
-	Volume1moAmm   float64 `json:"volume1moAmm"`
-	Volume1yrAmm   float64 `json:"volume1yrAmm"`
-	Volume24hrClob float64 `json:"volume24hrClob"`
-	Volume1wkClob  float64 `json:"volume1wkClob"`
-	Volume1moClob  float64 `json:"volume1moClob"`
-	Volume1yrClob  float64 `json:"volume1yrClob"`
-	VolumeAmm      float64 `json:"volumeAmm"`
-	VolumeClob     float64 `json:"volumeClob"`
-
-	// Liquidity breakdown
-	LiquidityAmm  float64 `json:"liquidityAmm"`
-	LiquidityClob float64 `json:"liquidityClob"`
-
-	// Gaming/sports specific
-	GameStartTime    NormalizedTime `json:"gameStartTime"`
-	SecondsDelay     int            `json:"secondsDelay"`
-	ClobTokenIDs     string         `json:"clobTokenIds"`
-	TeamAID          string         `json:"teamAID"`
-	TeamBID          string         `json:"teamBID"`
-	GameID           string         `json:"gameId"`
-	SportsMarketType string         `json:"sportsMarketType"`
-	Line             float64        `json:"line"`
-
-	// Discussions
-	DisqusThread string `json:"disqusThread"`
-
-	// AMM status
-	FPMMLive bool `json:"fpmmLive"`
-
-	// Custom settings
-	CustomLiveness int `json:"customLiveness"`
-
-	// Rewards
-	RewardsMinSize   float64 `json:"rewardsMinSize"`
-	RewardsMaxSpread float64 `json:"rewardsMaxSpread"`
-
-	// Image optimization
-	ImageOptimized *ImageOptimized `json:"imageOptimized,omitempty"`
-	IconOptimized  *ImageOptimized `json:"iconOptimized,omitempty"`
-
-	// Related entities
-	Events     []Event    `json:"events,omitempty"`
-	Categories []Category `json:"categories,omitempty"`
-	Tags       []Tag      `json:"tags,omitempty"`
-
-	// Creator and metadata
-	Creator                  string         `json:"creator"`
-	PastSlugs                string         `json:"pastSlugs"`
-	ReadyTimestamp           NormalizedTime `json:"readyTimestamp"`
-	FundedTimestamp          NormalizedTime `json:"fundedTimestamp"`
-	AcceptingOrdersTimestamp NormalizedTime `json:"acceptingOrdersTimestamp"`
-
-	// Competition
-	Competitive float64 `json:"competitive"`
-
-	// Spread information
-	Spread float64 `json:"spread"`
-
-	// Resolution flags
-	AutomaticallyResolved bool `json:"automaticallyResolved"`
-
-	// Price changes
-	OneDayPriceChange   float64 `json:"oneDayPriceChange"`
-	OneHourPriceChange  float64 `json:"oneHourPriceChange"`
-	OneWeekPriceChange  float64 `json:"oneWeekPriceChange"`
-	OneMonthPriceChange float64 `json:"oneMonthPriceChange"`
-	OneYearPriceChange  float64 `json:"oneYearPriceChange"`
-
-	// Current prices
-	LastTradePrice float64 `json:"lastTradePrice"`
-	BestBid        float64 `json:"bestBid"`
-	BestAsk        float64 `json:"bestAsk"`
-
-	// Activation
-	AutomaticallyActive bool `json:"automaticallyActive"`
-	ClearBookOnStart    bool `json:"clearBookOnStart"`
-	ManualActivation    bool `json:"manualActivation"`
-
-	// Chart styling
-	ChartColor     string `json:"chartColor"`
-	SeriesColor    string `json:"seriesColor"`
-	ShowGmpSeries  bool   `json:"showGmpSeries"`
-	ShowGmpOutcome bool   `json:"showGmpOutcome"`
-
-	// Negative risk
-	NegRiskOther bool `json:"negRiskOther"`
-
-	// Deployment status
-	PendingDeployment            bool           `json:"pendingDeployment"`
-	Deploying                    bool           `json:"deploying"`
-	DeployingTimestamp           NormalizedTime `json:"deployingTimestamp"`
-	ScheduledDeploymentTimestamp NormalizedTime `json:"scheduledDeploymentTimestamp"`
-
-	// RFQ
-	RFQEnabled bool `json:"rfqEnabled"`
-
-	// Event timing (may be empty/null for backward compatibility)
-	EventStartTime NormalizedTime `json:"eventStartTime"`
+	ID                           string    `json:"id"`
+	Question                     string    `json:"question"`
+	ConditionID                  string    `json:"conditionId"`
+	Slug                         string    `json:"slug"`
+	ResolutionSource             string    `json:"resolutionSource"`
+	EndDate                      time.Time `json:"endDate"`
+	Liquidity                    string    `json:"liquidity"`
+	StartDate                    time.Time `json:"startDate"`
+	Image                        string    `json:"image"`
+	Icon                         string    `json:"icon"`
+	Description                  string    `json:"description"`
+	Outcomes                     string    `json:"outcomes"`
+	Volume                       string    `json:"volume"`
+	Active                       bool      `json:"active"`
+	Closed                       bool      `json:"closed"`
+	MarketMakerAddress           string    `json:"marketMakerAddress"`
+	CreatedAt                    time.Time `json:"createdAt"`
+	New                          bool      `json:"new"`
+	Featured                     bool      `json:"featured"`
+	Archived                     bool      `json:"archived"`
+	Restricted                   bool      `json:"restricted"`
+	GroupItemThreshold           string    `json:"groupItemThreshold"`
+	QuestionID                   string    `json:"questionID"`
+	EnableOrderBook              bool      `json:"enableOrderBook"`
+	OrderPriceMinTickSize        float64   `json:"orderPriceMinTickSize"`
+	OrderMinSize                 int       `json:"orderMinSize"`
+	VolumeNum                    int       `json:"volumeNum"`
+	LiquidityNum                 int       `json:"liquidityNum"`
+	EndDateIso                   string    `json:"endDateIso"`
+	StartDateIso                 string    `json:"startDateIso"`
+	HasReviewedDates             bool      `json:"hasReviewedDates"`
+	Volume24Hr                   int       `json:"volume24hr"`
+	Volume1Wk                    int       `json:"volume1wk"`
+	Volume1Mo                    int       `json:"volume1mo"`
+	Volume1Yr                    int       `json:"volume1yr"`
+	ClobTokenIds                 string    `json:"clobTokenIds"`
+	Volume24HrAmm                int       `json:"volume24hrAmm"`
+	Volume1WkAmm                 int       `json:"volume1wkAmm"`
+	Volume1MoAmm                 int       `json:"volume1moAmm"`
+	Volume1YrAmm                 int       `json:"volume1yrAmm"`
+	Volume24HrClob               int       `json:"volume24hrClob"`
+	Volume1WkClob                int       `json:"volume1wkClob"`
+	Volume1MoClob                int       `json:"volume1moClob"`
+	Volume1YrClob                int       `json:"volume1yrClob"`
+	VolumeAmm                    int       `json:"volumeAmm"`
+	VolumeClob                   int       `json:"volumeClob"`
+	LiquidityAmm                 int       `json:"liquidityAmm"`
+	LiquidityClob                int       `json:"liquidityClob"`
+	NegRisk                      bool      `json:"negRisk"`
+	Ready                        bool      `json:"ready"`
+	Funded                       bool      `json:"funded"`
+	Cyom                         bool      `json:"cyom"`
+	Competitive                  int       `json:"competitive"`
+	PagerDutyNotificationEnabled bool      `json:"pagerDutyNotificationEnabled"`
+	Approved                     bool      `json:"approved"`
+	RewardsMinSize               int       `json:"rewardsMinSize"`
+	RewardsMaxSpread             int       `json:"rewardsMaxSpread"`
+	Spread                       int       `json:"spread"`
+	OneDayPriceChange            int       `json:"oneDayPriceChange"`
+	OneHourPriceChange           int       `json:"oneHourPriceChange"`
+	OneWeekPriceChange           int       `json:"oneWeekPriceChange"`
+	OneMonthPriceChange          int       `json:"oneMonthPriceChange"`
+	OneYearPriceChange           int       `json:"oneYearPriceChange"`
+	LastTradePrice               int       `json:"lastTradePrice"`
+	BestBid                      int       `json:"bestBid"`
+	BestAsk                      int       `json:"bestAsk"`
+	AutomaticallyActive          bool      `json:"automaticallyActive"`
+	ClearBookOnStart             bool      `json:"clearBookOnStart"`
+	ShowGmpSeries                bool      `json:"showGmpSeries"`
+	ShowGmpOutcome               bool      `json:"showGmpOutcome"`
+	ManualActivation             bool      `json:"manualActivation"`
+	NegRiskOther                 bool      `json:"negRiskOther"`
+	UmaResolutionStatuses        string    `json:"umaResolutionStatuses"`
+	PendingDeployment            bool      `json:"pendingDeployment"`
+	Deploying                    bool      `json:"deploying"`
+	RfqEnabled                   bool      `json:"rfqEnabled"`
+	EventStartTime               time.Time `json:"eventStartTime"`
+	HoldingRewardsEnabled        bool      `json:"holdingRewardsEnabled"`
+	FeesEnabled                  bool      `json:"feesEnabled"`
+	RequiresTranslation          bool      `json:"requiresTranslation"`
 }
 
 // ImageOptimized represents an optimized image resource
@@ -648,102 +507,42 @@ type ImageOptimized struct {
 
 // Event represents an event from the Gamma API
 type Event struct {
-	ID                string         `json:"id"`
-	Ticker            string         `json:"ticker"`
-	Slug              string         `json:"slug"`
-	Title             string         `json:"title"`
-	Subtitle          string         `json:"subtitle"`
-	Description       string         `json:"description"`
-	ResolutionSource  string         `json:"resolutionSource"`
-	StartDate         NormalizedTime `json:"startDate"`
-	CreationDate      NormalizedTime `json:"creationDate"`
-	EndDate           NormalizedTime `json:"endDate"`
-	Image             string         `json:"image"`
-	Icon              string         `json:"icon"`
-	Active            bool           `json:"active"`
-	Closed            bool           `json:"closed"`
-	Archived          bool           `json:"archived"`
-	New               bool           `json:"new"`
-	Featured          bool           `json:"featured"`
-	Restricted        bool           `json:"restricted"`
-	Liquidity         float64        `json:"liquidity"`
-	Volume            float64        `json:"volume"`
-	OpenInterest      float64        `json:"openInterest"`
-	SortBy            string         `json:"sortBy"`
-	Category          string         `json:"category"`
-	Subcategory       string         `json:"subcategory"`
-	IsTemplate        bool           `json:"isTemplate"`
-	TemplateVariables string         `json:"templateVariables"`
-	PublishedAt       NormalizedTime `json:"published_at"`
-	CreatedBy         string         `json:"createdBy"`
-	UpdatedBy         string         `json:"updatedBy"`
-	CreatedAt         NormalizedTime `json:"createdAt"`
-	UpdatedAt         NormalizedTime `json:"updatedAt"`
-	CommentsEnabled   bool           `json:"commentsEnabled"`
-	Competitive       float64        `json:"competitive"`
-	Volume24hr        float64        `json:"volume24hr"`
-	Volume1wk         float64        `json:"volume1wk"`
-	Volume1mo         float64        `json:"volume1mo"`
-	Volume1yr         float64        `json:"volume1yr"`
-	FeaturedImage     string         `json:"featuredImage"`
-	DisqusThread      string         `json:"disqusThread"`
-	ParentEvent       string         `json:"parentEvent"`
-	EnableOrderBook   bool           `json:"enableOrderBook"`
-	LiquidityAmm      float64        `json:"liquidityAmm"`
-	LiquidityClob     float64        `json:"liquidityClob"`
-	NegRisk           bool           `json:"negRisk"`
-	NegRiskMarketID   string         `json:"negRiskMarketID"`
-	NegRiskFeeBips    int            `json:"negRiskFeeBips"`
-	CommentCount      int            `json:"commentCount"`
-
-	// Optimized images
-	ImageOptimized         *ImageOptimized `json:"imageOptimized,omitempty"`
-	IconOptimized          *ImageOptimized `json:"iconOptimized,omitempty"`
-	FeaturedImageOptimized *ImageOptimized `json:"featuredImageOptimized,omitempty"`
-
-	// Related entities
-	SubEvents   []string     `json:"subEvents,omitempty"`
-	Markets     []Market     `json:"markets,omitempty"`
-	Series      []Series     `json:"series,omitempty"`
-	Categories  []Category   `json:"categories,omitempty"`
-	Collections []Collection `json:"collections,omitempty"`
-	Tags        []Tag        `json:"tags,omitempty"`
-
-	// Additional fields
-	CYOM                         bool           `json:"cyom"`
-	ClosedTime                   NormalizedTime `json:"closedTime"`
-	ShowAllOutcomes              bool           `json:"showAllOutcomes"`
-	ShowMarketImages             bool           `json:"showMarketImages"`
-	AutomaticallyResolved        bool           `json:"automaticallyResolved"`
-	EnableNegRisk                bool           `json:"enableNegRisk"`
-	AutomaticallyActive          bool           `json:"automaticallyActive"`
-	EventDate                    NormalizedTime `json:"eventDate"`
-	StartTime                    NormalizedTime `json:"startTime"`
-	EventWeek                    int            `json:"eventWeek"`
-	SeriesSlug                   string         `json:"seriesSlug"`
-	Score                        string         `json:"score"`
-	Elapsed                      string         `json:"elapsed"`
-	Period                       string         `json:"period"`
-	Live                         bool           `json:"live"`
-	Ended                        bool           `json:"ended"`
-	FinishedTimestamp            NormalizedTime `json:"finishedTimestamp"`
-	GMPChartMode                 string         `json:"gmpChartMode"`
-	EventCreators                []EventCreator `json:"eventCreators,omitempty"`
-	TweetCount                   int            `json:"tweetCount"`
-	Chats                        []Chat         `json:"chats,omitempty"`
-	FeaturedOrder                int            `json:"featuredOrder"`
-	EstimateValue                bool           `json:"estimateValue"`
-	CantEstimate                 bool           `json:"cantEstimate"`
-	EstimatedValue               string         `json:"estimatedValue"`
-	Templates                    []Template     `json:"templates,omitempty"`
-	SpreadsMainLine              float64        `json:"spreadsMainLine"`
-	TotalsMainLine               float64        `json:"totalsMainLine"`
-	CarouselMap                  string         `json:"carouselMap"`
-	PendingDeployment            bool           `json:"pendingDeployment"`
-	Deploying                    bool           `json:"deploying"`
-	DeployingTimestamp           NormalizedTime `json:"deployingTimestamp"`
-	ScheduledDeploymentTimestamp NormalizedTime `json:"scheduledDeploymentTimestamp"`
-	GameStatus                   string         `json:"gameStatus"`
+	ID                  string    `json:"id"`
+	Ticker              string    `json:"ticker"`
+	Slug                string    `json:"slug"`
+	Title               string    `json:"title"`
+	Description         string    `json:"description"`
+	ResolutionSource    string    `json:"resolutionSource"`
+	StartDate           time.Time `json:"startDate"`
+	CreationDate        time.Time `json:"creationDate"`
+	EndDate             time.Time `json:"endDate"`
+	Image               string    `json:"image"`
+	Icon                string    `json:"icon"`
+	Active              bool      `json:"active"`
+	Closed              bool      `json:"closed"`
+	Archived            bool      `json:"archived"`
+	New                 bool      `json:"new"`
+	Featured            bool      `json:"featured"`
+	Restricted          bool      `json:"restricted"`
+	OpenInterest        int       `json:"openInterest"`
+	CreatedAt           time.Time `json:"createdAt"`
+	UpdatedAt           time.Time `json:"updatedAt"`
+	EnableOrderBook     bool      `json:"enableOrderBook"`
+	NegRisk             bool      `json:"negRisk"`
+	CommentCount        int       `json:"commentCount"`
+	Markets             []Market `json:"markets"`
+	Series              []Series  `json:"series"`
+	Tags                []Tag     `json:"tags"`
+	Cyom                bool      `json:"cyom"`
+	ShowAllOutcomes     bool      `json:"showAllOutcomes"`
+	ShowMarketImages    bool      `json:"showMarketImages"`
+	EnableNegRisk       bool      `json:"enableNegRisk"`
+	StartTime           time.Time `json:"startTime"`
+	SeriesSlug          string    `json:"seriesSlug"`
+	NegRiskAugmented    bool      `json:"negRiskAugmented"`
+	PendingDeployment   bool      `json:"pendingDeployment"`
+	Deploying           bool      `json:"deploying"`
+	RequiresTranslation bool      `json:"requiresTranslation"`
 }
 
 // Category represents a category or subcategory
@@ -761,60 +560,38 @@ type Category struct {
 
 // Tag represents a tag associated with markets or events
 type Tag struct {
-	ID          string         `json:"id"`
-	Label       string         `json:"label"`
-	Slug        string         `json:"slug"`
-	ForceShow   bool           `json:"forceShow"`
-	PublishedAt NormalizedTime `json:"publishedAt"`
-	CreatedBy   int            `json:"createdBy"`
-	UpdatedBy   int            `json:"updatedBy"`
-	CreatedAt   NormalizedTime `json:"createdAt"`
-	UpdatedAt   NormalizedTime `json:"updatedAt"`
-	ForceHide   bool           `json:"forceHide"`
-	IsCarousel  bool           `json:"isCarousel"`
+	ID                  string    `json:"id"`
+	Label               string    `json:"label"`
+	Slug                string    `json:"slug"`
+	ForceShow           bool      `json:"forceShow,omitempty"`
+	PublishedAt         string    `json:"publishedAt,omitempty"`
+	CreatedBy           int       `json:"createdBy,omitempty"`
+	UpdatedBy           int       `json:"updatedBy,omitempty"`
+	CreatedAt           time.Time `json:"createdAt"`
+	UpdatedAt           time.Time `json:"updatedAt"`
+	RequiresTranslation bool      `json:"requiresTranslation"`
+	IsCarousel          bool      `json:"isCarousel,omitempty"`
 }
 
 // Series represents a series of events
 type Series struct {
-	ID                string         `json:"id"`
-	Ticker            string         `json:"ticker"`
-	Slug              string         `json:"slug"`
-	Title             string         `json:"title"`
-	Subtitle          string         `json:"subtitle"`
-	SeriesType        string         `json:"seriesType"`
-	Recurrence        string         `json:"recurrence"`
-	Description       string         `json:"description"`
-	Image             string         `json:"image"`
-	Icon              string         `json:"icon"`
-	Layout            string         `json:"layout"`
-	Active            bool           `json:"active"`
-	Closed            bool           `json:"closed"`
-	Archived          bool           `json:"archived"`
-	New               bool           `json:"new"`
-	Featured          bool           `json:"featured"`
-	Restricted        bool           `json:"restricted"`
-	IsTemplate        bool           `json:"isTemplate"`
-	TemplateVariables bool           `json:"templateVariables"`
-	PublishedAt       NormalizedTime `json:"publishedAt"`
-	CreatedBy         string         `json:"createdBy"`
-	UpdatedBy         string         `json:"updatedBy"`
-	CreatedAt         NormalizedTime `json:"createdAt"`
-	UpdatedAt         NormalizedTime `json:"updatedAt"`
-	CommentsEnabled   bool           `json:"commentsEnabled"`
-	Competitive       string         `json:"competitive"`
-	Volume24hr        float64        `json:"volume24hr"`
-	Volume            float64        `json:"volume"`
-	Liquidity         float64        `json:"liquidity"`
-	StartDate         NormalizedTime `json:"startDate"`
-	PythTokenID       string         `json:"pythTokenID"`
-	CGAssetName       string         `json:"cgAssetName"`
-	Score             float64        `json:"score"`
-	Events            []Event        `json:"events,omitempty"`
-	Collections       []Collection   `json:"collections,omitempty"`
-	Categories        []Category     `json:"categories,omitempty"`
-	Tags              []Tag          `json:"tags,omitempty"`
-	CommentCount      int            `json:"commentCount"`
-	Chats             []Chat         `json:"chats,omitempty"`
+	ID                  string    `json:"id"`
+	Ticker              string    `json:"ticker"`
+	Slug                string    `json:"slug"`
+	Title               string    `json:"title"`
+	SeriesType          string    `json:"seriesType"`
+	Recurrence          string    `json:"recurrence"`
+	Image               string    `json:"image"`
+	Icon                string    `json:"icon"`
+	Active              bool      `json:"active"`
+	Closed              bool      `json:"closed"`
+	Archived            bool      `json:"archived"`
+	Featured            bool      `json:"featured"`
+	Restricted          bool      `json:"restricted"`
+	CreatedAt           time.Time `json:"createdAt"`
+	UpdatedAt           time.Time `json:"updatedAt"`
+	CommentCount        int       `json:"commentCount"`
+	RequiresTranslation bool      `json:"requiresTranslation"`
 }
 
 // Collection represents a collection of events
